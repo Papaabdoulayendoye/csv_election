@@ -4,6 +4,7 @@ const utilisateurSchema = new Schema({
 nom: { type: String, required: true },
 email: { type: String, required: true, unique: true },
 motDePasse: { type: String, required: true },
+createAt : {type : Date, default : Date.now},
 votes: [
 {
     electionId: {

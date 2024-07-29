@@ -1,6 +1,5 @@
 "use client";
 // pages/register.tsx
-"use client";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,15 +16,19 @@ import {
 } from "@/components/ui/form";
 import * as z from 'zod'
 import { RegisterValidation } from "@/lib/validations/register";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { userRegisterFunction } from '@/lib/actions/user.actions';
+import { Loader2 } from 'lucide-react';
 
 const SignUp = () => {
+  const pathName = usePathname()
   const [submitting, setSubmitting] = useState<boolean>(false);
   const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(RegisterValidation),
     defaultValues: {
+      nom: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -34,13 +37,13 @@ const SignUp = () => {
 
   const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
     setSubmitting(true);
+    const {nom,email,password} = values;
     try {
-      // Simulate server request
-      console.log('Form submitted successfully', values);
+        await userRegisterFunction({nom,email,password});
       setTimeout(() => {
         setSubmitting(false);
         router.push('/dashboard');
-      }, 2000);
+      }, 3500);
     } catch (error) {
       setSubmitting(false);
       console.error(error);
@@ -58,6 +61,19 @@ const SignUp = () => {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="nom"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nom</FormLabel>
+                  <FormControl>
+                    <Input type="nom" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -97,8 +113,8 @@ const SignUp = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={submitting}>
-              {submitting ? 'Création en cours...' : 'Créer un compte'}
+            <Button type="submit" className="w-full text-white" disabled={submitting}>
+              {submitting ? <Loader2 className='text-white animate-spin' /> : 'Créer un compte'}
             </Button>
           </form>
         </Form>

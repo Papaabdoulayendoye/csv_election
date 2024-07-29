@@ -7,9 +7,13 @@ import Hero from '@/components/landing-page/Hero'
 import HowItWorks from '@/components/landing-page/HowItWorks'
 import NewsletterModal from '@/components/landing-page/NewsletterModal'
 import Testimonials from '@/components/landing-page/Testimonials'
+import { fetchElections } from '@/lib/actions/election.actions'
 import React from 'react'
 
-const page = () => {
+const page = async () => {
+  const elections = await fetchElections();
+  console.log("elections ",elections);
+  
   return (
     <div>
     <Header />

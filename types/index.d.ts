@@ -1,0 +1,85 @@
+// types.ts
+
+import { Types } from "mongoose";
+
+interface Vote {
+electionId: Types.ObjectId;
+candidatId: Types.ObjectId;
+}
+
+interface Candidature {
+electionId: Types.ObjectId;
+status: string; // Ex: "accepté", "rejeté", "en attente"
+}
+
+export interface UserProps {
+nom: string;
+email: string;
+motDePasse: string;
+votes: Vote[];
+candidatures: Candidature[];
+}
+
+export interface CandidatProps {
+nom: string;
+programme: string;
+photo?: string;
+}
+
+
+export interface ElectionCandidat {
+id: Types.ObjectId;
+nom: string;
+programme: string;
+photo?: string;
+}
+
+export interface ElectionVote {
+electeurId: Types.ObjectId;
+candidatId: Types.ObjectId;
+}
+
+
+
+export interface AdministrateurProps {
+nom: string;
+email: string;
+motDePasse: string;
+}
+
+export interface CreateElectionProps {
+    titre: string;
+    dateDebut: Date;
+    dateFin: Date;
+    description: string;
+    candidats: Array<{ id: string; nom: string; programme: string; photo?: string }>;
+}
+
+
+
+export interface ElectionProps {
+titre: string;
+dateDebut: string;
+dateFin: string;
+description: string;
+category:string;
+candidats?: ElectionCandidat[];
+votes?: ElectionVote[];
+}
+
+// export interface ElectionProps {
+//   titre: string;
+//   dateDebut: Date;
+//   dateFin: Date;
+//   description: string;
+//   candidats: Array<{
+//     id: string;
+//     nom: string;
+//     programme: string;
+//     photo?: string;
+//   }>;
+//   votes: Array<{
+//     electeurId: string;
+//     candidatId: string;
+//   }>;
+// }

@@ -5,6 +5,7 @@ const electionSchema = new Schema({
   dateDebut: { type: Date, required: true },
   dateFin: { type: Date, required: true },
   description: { type: String, required: true },
+  createAt : {type : Date, default : Date.now},
   candidats: [
     {
       id: {

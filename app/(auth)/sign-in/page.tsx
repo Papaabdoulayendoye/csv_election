@@ -17,11 +17,12 @@ FormMessage,
 import { SignInValidation } from "@/lib/validations/signIn";
 import { useRouter } from "next/navigation";
 import * as z from 'zod'
+import { UserLoginFunction } from '@/lib/actions/user.actions';
+import { Loader2 } from 'lucide-react';
 
 const SignIn = () => {
 const [submitting, setSubmitting] = useState<boolean>(false);
 const router = useRouter();
-
 const form = useForm({
 resolver: zodResolver(SignInValidation),
 defaultValues: {
@@ -31,17 +32,22 @@ defaultValues: {
 });
 
 const onSubmit = async (values: z.infer<typeof SignInValidation>) => {
+const { email, password } = values;
+
 setSubmitting(true);
 try {
-    // Simulate server request
-    console.log('Form submitted successfully', values);
+    await UserLoginFunction({ email, password });
+    localStorage.setItem("currentUser", email);
     setTimeout(() => {
     setSubmitting(false);
     router.push('/dashboard');
-    }, 2000);
+    }, 3500);
 } catch (error) {
-    setSubmitting(false);
-    console.error(error);
+setSubmitting(false);
+if (error instanceof Error) {
+    // Affiche le message d'erreur dans le champ du mot de passe
+    form.setError("password", { type: "manual", message: error.message });
+}
 }
 };
 
@@ -91,8 +97,8 @@ return (
             <a href="/forgot-password" className="font-medium text-secondary hover:text-primary">Mot de passe oublié ?</a>
             </div>
         </div>
-        <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? 'Connexion...' : 'Se connecter'}
+        <Button type="submit" className="w-full text-white" disabled={submitting}>
+            {submitting ? <Loader2 className='animate-spin' /> : 'Se connecter'}
         </Button>
         </form>
     </Form>
