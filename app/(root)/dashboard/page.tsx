@@ -181,6 +181,10 @@ const DashboardPage = () => {
           <div className="space-x-4">
             {user?.email === 'admin.evote@gmail.com' && 
             (
+              <Link href="/admin/gestion-candidat" className="hover:text-secondary transition duration-300">Gestion des candidats</Link>
+            )}
+            {user?.email === 'admin.evote@gmail.com' && 
+            (
               <Link href="/admin/create-election" className="hover:text-secondary transition duration-300">Créer une élection</Link>
             )}
             <Link href="/#" className="hover:text-secondary transition duration-300">Profil</Link>

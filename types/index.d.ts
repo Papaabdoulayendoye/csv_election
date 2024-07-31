@@ -7,7 +7,7 @@ electionId: Types.ObjectId;
 candidatId: Types.ObjectId;
 }
 
-interface Candidature {
+interface CandidatureProps2 {
 electionId: Types.ObjectId;
 status: string; // Ex: "accepté", "rejeté", "en attente"
 }
@@ -83,3 +83,27 @@ votes?: ElectionVote[];
 //     candidatId: string;
 //   }>;
 // }
+
+
+interface CandidatureProps {
+  utilisateurId: string;
+  electionId: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  bio: string;
+  photo?: string | File | undefined;
+}
+
+export interface CandidatureProps3 {
+  _id: string;
+  utilisateurId: string;
+  electionId: ElectionProps;
+  fullName: string;
+  email: string;
+  phone?: string;
+  bio: string;
+  photo?: string;
+  status: 'en attente' | 'accepté' | 'rejeté';
+  createdAt: string;
+}

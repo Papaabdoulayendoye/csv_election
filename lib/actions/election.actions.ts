@@ -94,3 +94,9 @@ export async function fetchElections(pageNumber = 1, pageSize = 10) {
     throw new Error("Failed to fetch elections: " + error.message);
   }
 }
+
+
+export const getCandidatesForElection = async (electionId : string) => {
+  const election = await Election.findById(electionId).populate('candidats').exec();
+  return parseStringify(election);
+};

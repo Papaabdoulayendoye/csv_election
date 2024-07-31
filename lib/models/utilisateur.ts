@@ -25,7 +25,8 @@ candidatures: [
     },
     status: { type: String } // Ex: "accepté", "rejeté", "en attente"
 }
-]
+],
+createdAt: { type: Date, default: Date.now }
 });
 
 const Utilisateur = models.Utilisateur || model("Utilisateur", utilisateurSchema);

@@ -1,7 +1,7 @@
 // pages/postuler.tsx
 "use client";
-
-import { useState } from "react";
+import Image from 'next/image';
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -13,13 +13,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PostulerValidation } from '@/lib/validations/candidature';
+import { createCandidature } from '@/lib/actions/candidats.actions'; // Adjust the import as needed
+import { getCurrentUserActions } from '@/lib/actions/user.actions';
 
 const Postuler = ({ params }: { params: { id: string } }) => {
     const electionId = params.id;
-    console.log("electionId",electionId);
-    
+
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [user, setUser] = useState<{ _id: string } | null>(null);
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(PostulerValidation),
@@ -29,24 +32,73 @@ const Postuler = ({ params }: { params: { id: string } }) => {
             email: '',
             phone: '',
             bio: '',
-            photo : '',
-            agreeTerms: false
+            photo: ''
         },
     });
 
+    useEffect(() => {
+        const currentUser = localStorage.getItem('currentUser');
+        if (!currentUser) {
+            router.push('/');
+        } else {
+            const getUser = async () => {
+                const response = await getCurrentUserActions({ currentUser });
+                setUser(response);
+            };
+            getUser();
+        }
+    }, [router]);
+
+    const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setPhotoPreview(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                form.setValue("photo", reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const onSubmit = async (values: z.infer<typeof PostulerValidation>) => {
         setSubmitting(true);
-        console.log("values",values);
-        
+        const { bio, email, fullName, phone, photo } = values;
+
+        const formData = new FormData();
+        formData.append("electionId", electionId);
+        formData.append("fullName", fullName);
+        formData.append("email", email);
+        formData.append("phone", phone || '');
+        formData.append("bio", bio);
+        if (photo) {
+            formData.append("photo", photo);
+        }
+
         try {
-            // Simuler l'appel API
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            setSubmitting(false);
-            setShowConfirmation(true);
-            form.reset();
+            if (user) {
+                await createCandidature({
+                    utilisateurId: user._id,
+                    electionId,
+                    fullName,
+                    email,
+                    phone,
+                    bio,
+                    photo,
+                });
+                setSubmitting(false);
+                setShowConfirmation(true);
+                form.reset();
+                setPhotoPreview(null);
+                setTimeout(() => {
+                    router.push('/dashboard')
+                }, 2000);
+            } else {
+                throw new Error("Utilisateur non connecté.");
+            }
         } catch (error) {
+            console.error("Erreur lors de la soumission de la candidature :", error);
             setSubmitting(false);
-            // Gérer les erreurs ici
         }
     };
 
@@ -125,9 +177,15 @@ const Postuler = ({ params }: { params: { id: string } }) => {
                             <FormItem>
                                 <FormLabel>Photo de Profil (optionnelle) :</FormLabel>
                                 <FormControl>
-                                    {/* <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" /> */}
-                                    <Input type='file' accept='image/png, image/jpeg' {...field} />
+                                    <Input
+                                        onChange={handlePhotoChange}
+                                        type='file'
+                                        accept='image/jpg, image/png, image/jpeg'
+                                    />
                                 </FormControl>
+                                {photoPreview && (
+                                    <Image src={photoPreview} width={20} height={20} alt="Prévisualisation de la photo" className="mt-2 h-20 w-20 object-cover" />
+                                )}
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -152,10 +210,9 @@ const Postuler = ({ params }: { params: { id: string } }) => {
                         <p className="text-gray-700 mb-4">Merci d'avoir soumis votre candidature. Nous l'avons reçue et nous l'examinerons sous peu.</p>
                         <p className="text-gray-700 mb-4">Statut de votre candidature : <span className="font-semibold text-blue-600">En Attente de Révision</span></p>
                         <Button onClick={() => {
-                            setShowConfirmation(false)
-                            router.back()
-                            }
-                        } className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            setShowConfirmation(false);
+                            router.back();
+                        }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Fermer
                         </Button>
                     </div>

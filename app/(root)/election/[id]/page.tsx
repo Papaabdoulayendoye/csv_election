@@ -7,6 +7,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ReactNode } from 'react';
+import { getCandidatesForElection } from '@/lib/actions/election.actions';
 
 // Enregistrer les composants de graphique
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -55,6 +56,11 @@ setRankingData({
     borderWidth: 1
     }]
 });
+    const FetchCandidatesForElection = async () => {
+        const response = await getCandidatesForElection(electionId);
+        console.log("response",response);
+    }
+    FetchCandidatesForElection();
 }, []);
 
 const handleVote = (candidateName: string) => {
@@ -68,7 +74,9 @@ setShowModal(false);
 alert('Vote soumis avec succès!');
 router.push('/dashboard');
 };
-
+const loggout = () => {
+    localStorage.clear();
+};
 return (
 <>
     <div className="bg-gray-100 min-h-screen">
@@ -78,7 +86,7 @@ return (
         <div className="space-x-4">
             <a href="/dashboard" className="hover:text-secondary transition duration-300">Tableau de bord</a>
             <a href="/profile" className="hover:text-secondary transition duration-300">Profil</a>
-            <a href="/logout" className="hover:text-secondary transition duration-300">Déconnexion</a>
+            <a href="/sign-in" onClick={loggout} className="hover:text-secondary transition duration-300">Déconnexion</a>
         </div>
         </div>
     </nav>
