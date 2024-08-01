@@ -17,7 +17,14 @@ const candidatureSchema = new Schema({
   bio: { type: String, required: true },
   photo: { type: String, required: false }, // URL ou chemin de fichier
   status: { type: String, enum: ['en attente', 'accepté', 'rejeté'], default: 'en attente' },
-  createdAt: { type: Date, default: Date.now }
+  votes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Utilisateur',
+      required: true
+    }
+  ],
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Candidature = models.Candidature || model("Candidature", candidatureSchema);

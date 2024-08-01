@@ -1,5 +1,4 @@
 "use server"
-
 import { CandidatureProps } from '@/types';
 import { connectToDB } from '../mongoose';
 import Candidature from '../models/candidat';
@@ -29,7 +28,6 @@ await newCandidature.save();
 //   { $push: { candidats: { id: newCandidature._id, nom: candidatureData.fullName, programme: candidatureData.bio, photo: candidatureData.photo } } },
 //   { new: true }
 // );
-
 return { message: "Candidature créée avec succès" };
 } catch (error: any) {
 throw new Error("Échec de la création de la candidature: " + error.message);
@@ -47,28 +45,60 @@ return parseStringify(await Candidature.find().populate('utilisateurId').populat
 }
 
 export async function approveCandidature(candidatureId : string) {
-await connectToDB();
-console.log("candidatureId",candidatureId);
+  await connectToDB();
+  console.log("candidatureId", candidatureId);
 
-const candidature = await Candidature.findById(candidatureId);
+  try {
+    const candidature = await Candidature.findById(candidatureId);
+    if (!candidature) {
+      throw new Error('Candidature not found');
+    }
+
     if (candidature.status === 'accepté' || candidature.status === 'rejeté') {
-        throw new Error(`Candidature already ${candidature.status}`);
-}
-const updatedCandidature = await Candidature.findByIdAndUpdate(
-candidatureId,
-{ status: 'accepté' },
-{ new: true }
-);
-console.log("updatedCandidature",updatedCandidature);
+      throw new Error(`Candidature already ${candidature.status}`);
+    }
+    candidature.status = 'accepté';
+    candidature.votes = [];
+    // candidature.votes = 0; // Initialize votes to 0
+    const updatedCandidature = await candidature.save();
+    console.log("updatedCandidature", updatedCandidature);
 
-await Election.findByIdAndUpdate(
-updatedCandidature.electionId,
-{ $push: { candidats: { id: updatedCandidature._id, nom: updatedCandidature.fullName, programme: updatedCandidature.bio, photo: updatedCandidature.photo } } },
-{ new: true }
-);
+    const election = await Election.findByIdAndUpdate(
+      updatedCandidature.electionId,
+      { 
+        $push: { 
+          candidats: { 
+            _id: updatedCandidature._id, 
+            fullName: updatedCandidature.fullName, 
+            bio: updatedCandidature.bio, 
+            photo: updatedCandidature.photo
+          } 
+        } 
+      },
+      { new: true }
+    );
 
-return parseStringify(updatedCandidature);
+    if (!election) {
+      throw new Error('Election not found');
+    }
+
+    console.log("updatedElection", election);
+
+    return parseStringify(updatedCandidature);
+  } catch (error) {
+    console.error("Error approving candidature:", error);
+    throw error;
+  }
 }
+
+
+
+
+
+
+
+
+
 
 export async function rejectCandidature(candidatureId : string) {
 await connectToDB();
