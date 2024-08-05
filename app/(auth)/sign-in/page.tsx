@@ -45,7 +45,6 @@ try {
 } catch (error) {
 setSubmitting(false);
 if (error instanceof Error) {
-    // Affiche le message d'erreur dans le champ du mot de passe
     form.setError("password", { type: "manual", message: error.message });
 }
 }

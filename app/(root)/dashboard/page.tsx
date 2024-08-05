@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Navbar from '@/components/Navbar';
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -156,7 +157,8 @@ const DashboardPage = () => {
   };
 
   const formatDateRange = (start: string, end: string) => {
-    return `${new Date(start).toLocaleDateString()} - ${new Date(end).toLocaleDateString()}`;
+    return `${new Date(start).toLocaleString()} - ${new Date(end).toLocaleString()}`;
+    // return `${new Date(start).toLocaleDateString()} - ${new Date(end).toLocaleDateString()}`;
   };
 
   const handleStatusFilterChange = (status: string) => {
@@ -175,24 +177,7 @@ const DashboardPage = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <nav className="bg-primary text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link href="/dashboard" className="text-2xl font-bold">E-Vote {user?.email === 'admin.evote@gmail.com' && 'Admin'}</Link>
-          <div className="space-x-4">
-            {user?.email === 'admin.evote@gmail.com' && 
-            (
-              <Link href="/admin/gestion-candidat" className="hover:text-secondary transition duration-300">Gestion des candidats</Link>
-            )}
-            {user?.email === 'admin.evote@gmail.com' && 
-            (
-              <Link href="/admin/create-election" className="hover:text-secondary transition duration-300">Créer une élection</Link>
-            )}
-            <Link href="/#" className="hover:text-secondary transition duration-300">Profil</Link>
-            <Link href="/#" className="hover:text-secondary transition duration-300">Paramètres</Link>
-            <Link href="/sign-in" onClick={loggout} className="hover:text-secondary transition duration-300">Déconnexion</Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar user={user!}/>
 
       <main className="container mx-auto mt-8 px-4">
         <div className='mb-8'>
@@ -241,13 +226,13 @@ const DashboardPage = () => {
         <Pagination className='mb-4'>
           <PaginationContent>
             <PaginationItem>
-              <Button disabled={currentPage === 1} className='text-white'>
-              <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)}   />
+              <Button disabled={currentPage === 1} className='text-white hover:bg-slate-800'>
+              <PaginationPrevious className="hover:bg-slate-800" href="#" onClick={() => handlePageChange(currentPage - 1)}   />
               </Button>
             </PaginationItem>
             {Array.from({ length: Math.ceil(elections.length / 10) }, (_, index) => (
               <PaginationItem key={index}>
-                <PaginationLink
+                <PaginationLink className=''
                   href="#"
                   onClick={() => handlePageChange(index + 1)}
                   isActive={currentPage === index + 1}
@@ -257,8 +242,8 @@ const DashboardPage = () => {
               </PaginationItem>
             ))}
             <PaginationItem>
-              <Button disabled={!isNext} className='text-white'>
-              <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)} />
+              <Button disabled={!isNext} className='text-white hover:bg-slate-800'>
+              <PaginationNext className='hover:bg-slate-800' href="#" onClick={() => handlePageChange(currentPage + 1)} />
               </Button>
             </PaginationItem>
           </PaginationContent>

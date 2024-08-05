@@ -11,9 +11,6 @@ import { fetchElections } from '@/lib/actions/election.actions'
 import React from 'react'
 
 const page = async () => {
-  const elections = await fetchElections();
-  console.log("elections ",elections);
-  
   return (
     <div>
     <Header />

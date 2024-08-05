@@ -4,7 +4,10 @@ const utilisateurSchema = new Schema({
 nom: { type: String, required: true },
 email: { type: String, required: true, unique: true },
 motDePasse: { type: String, required: true },
-createAt : {type : Date, default : Date.now},
+telephone: { type: String, required: false },
+bio: { type: String, required: false },
+photo: { type: String, required: false }, // URL ou chemin de fichier
+status: { type: String, enum: ['activé', 'desactivité'], default: 'desactivité' },
 votes: [
 {
     electionId: {
@@ -14,7 +17,8 @@ votes: [
     candidatId: {
     type: Schema.Types.ObjectId,
     ref: 'Candidat'
-    }
+    },
+    createdAt: { type: Date, default: Date.now }
 }
 ],
 candidatures: [

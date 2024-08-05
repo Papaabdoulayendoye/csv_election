@@ -18,8 +18,9 @@ import { CandidatureProps3, UserProps } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getCurrentUserActions } from '@/lib/actions/user.actions';
-import Candidature from '@/lib/models/candidat';
-import { parseStringify } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import { StatCard } from '@/components/StatCard';
+import clsx from 'clsx';
 
 const AdminCandidatures = () => {
   const [candidatures, setCandidatures] = useState<CandidatureProps3[]>([]);
@@ -86,18 +87,6 @@ const AdminCandidatures = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "en attente":
-        return "text-blue-400";
-      case "accepté":
-        return "text-green-500";
-      case "rejeté":
-        return "text-red-500";
-      default:
-        return "text-gray-500";
-    }
-  };
 
   if (loading) {
     return <p className="text-white">Chargement...</p>;
@@ -109,48 +98,58 @@ const AdminCandidatures = () => {
   const rejectedCandidatures = candidatures.filter(c => c.status === 'rejeté').length;
 
   return (
-    <div className="bg-gray-900 min-h-screen p-4">
-      <nav className="bg-primary text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link href="/dashboard" className="text-2xl font-bold">E-Vote {user?.email === 'admin.evote@gmail.com' && 'Admin'}</Link>
-          <div className="space-x-4">
-            {user?.email === 'admin.evote@gmail.com' && 
-            (
-              <Link href="/admin/gestion-candidat" className="hover:text-secondary transition duration-300">Gestion des candidats</Link>
-            )}
-            {user?.email === 'admin.evote@gmail.com' && 
-            (
-              <Link href="/admin/create-election" className="hover:text-secondary transition duration-300">Créer une élection</Link>
-            )}
-            <Link href="/#" className="hover:text-secondary transition duration-300">Profil</Link>
-            <Link href="/#" className="hover:text-secondary transition duration-300">Paramètres</Link>
-            <Link href="/sign-in" onClick={loggout} className="hover:text-secondary transition duration-300">Déconnexion</Link>
-          </div>
-        </div>
-      </nav>
-      <main className="container mx-auto mt-8 px-4">
-        <h1 className="text-2xl font-bold text-white mb-4">Gestion des Candidatures</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <div className="bg-gray-800 p-4 rounded-lg shadow">
-            <h2 className="text-lg font-bold text-white">Total Candidatures</h2>
-            <p className="text-2xl text-gray-400">{totalCandidatures}</p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded-lg shadow">
-            <h2 className="text-lg font-bold text-white">En Attente</h2>
-            <p className="text-2xl text-gray-400">{pendingCandidatures}</p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded-lg shadow">
-            <h2 className="text-lg font-bold text-white">Approuvées</h2>
-            <p className="text-2xl text-gray-400">{acceptedCandidatures}</p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded-lg shadow">
-            <h2 className="text-lg font-bold text-white">Rejetées</h2>
-            <p className="text-2xl text-gray-400">{rejectedCandidatures}</p>
-          </div>
-        </div>
-        <div className="overflow-x-auto bg-gray-800 rounded-lg p-6">
+    <div className={cn(
+    "min-h-screen bg-dark-300 font-sans antialiased flex-col space-y-14"
+    )}>
+      <header className="admin-header">
+    <Link href="/" className="cursor-pointer">
+        <div className="flex items-center">
+        <svg className="h-8 w-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+        <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="font-bold text-xl">E-Vote Admin</span>
+    </div>
+    </Link>
+    <p className="text-16-semibold">Admin Dashboard</p>
+    </header>
+      <main className="admin-main">
+        <section className="w-full space-y-4">
+        <h1 className="header text-white">Bienvenue 👋</h1>
+        <p className="text-dark-700">
+        Gestion des Candidatures
+        </p>
+        </section>
+        <section className="admin-stat">
+        <StatCard
+        type="appointments"
+        count={totalCandidatures}
+        label="Total Candidatures"
+        icon={"/assets/icons/appointments.svg"}
+        />
+        <StatCard
+        type="pending"
+        count={pendingCandidatures}
+        label="En Attente"
+        icon={"/assets/icons/pending.svg"}
+        />
+        <StatCard
+        type="pending"
+        count={acceptedCandidatures}
+        label="Acceptées"
+        icon={"/assets/icons/pending.svg"}
+        icons={true}
+        />
+        <StatCard
+        type="cancelled"
+        count={rejectedCandidatures}
+        label="Rejetées"
+        icon={"/assets/icons/cancelled.svg"}
+        />
+    </section>
+        <div className=" container overflow-x-auto bg-gray-800 rounded-lg p-6">
           <Table>
-            <TableCaption>Liste des candidatures récentes.</TableCaption>
+            <TableCaption className='text-white'>Liste des candidatures récentes.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-white py-2 px-4">Nom complet</TableHead>
@@ -171,19 +170,31 @@ const AdminCandidatures = () => {
                   <TableCell className="py-2 px-4 text-white">{candidature.phone || 'N/A'}</TableCell>
                   <TableCell className="py-2 px-4 text-white">{candidature.bio}</TableCell>
                   <TableCell className="py-2 px-4 text-white">
+                    <div className='h-[60px] w-[60px] rounded-full'>
                     {candidature.photo ? (
-                      <Image src={candidature.photo} alt={candidature.fullName} width={50} height={50} />
+                      <Image src={candidature.photo} alt={candidature.fullName} className='h-[60px] w-[60px] rounded-full bg-contain bg-no-repeat'  width={60} height={60} />
                     ) : (
                       'N/A'
                     )}
+                    </div>
                   </TableCell>
                   <TableCell className="py-2 px-4 text-white">
-                    <span className={`inline-block py-1 px-2 rounded-full text-xs font-bold ${getBgStatusColor(candidature.status)}`}>
+                    <div className={clsx("status-badge", {
+                                "bg-blue-600": candidature.status === "en attente",
+                                "bg-green-600": candidature.status === "accepté",
+                                "bg-red-600": candidature.status === "rejeté",
+                                    })}>
+                    <p className={clsx("text-12-semibold capitalize", {
+                        "text-blue-500": candidature.status === "en attente",
+                        "text-green-500": candidature.status === "accepté",
+                        "text-red-500": candidature.status === "rejeté",
+                    })}>
                       {candidature.status}
-                    </span>
+                    </p>
+                    </div>
                   </TableCell>
                   <TableCell className="py-2 px-4 text-white">{candidature?.electionId?.titre}</TableCell>
-                  <TableCell className="py-2 px-4">
+                  <TableCell className="py-2 px-4 flex items-center justify-center">
                     <button
                       onClick={() => handleApprove(candidature._id)}
                       className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700 transition duration-300"

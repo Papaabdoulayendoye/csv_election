@@ -13,11 +13,17 @@ status: string; // Ex: "accepté", "rejeté", "en attente"
 }
 
 export interface UserProps {
-nom: string;
-email: string;
-motDePasse: string;
-votes: Vote[];
-candidatures: Candidature[];
+  _id: string;
+  nom: string;
+  email: string;
+  motDePasse: string;
+  telephone?: string;
+  bio: string;
+  photo?: string;
+  status: 'activé' | 'desactivé';
+  votes: Vote[];
+  candidatures: Candidature[];
+  createdAt: Date;
 }
 
 export interface CandidatProps {

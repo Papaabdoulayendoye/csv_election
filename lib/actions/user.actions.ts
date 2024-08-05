@@ -5,9 +5,26 @@ import { connectToDB } from '../mongoose';
 import { parseStringify } from '../utils';
 import Administrateur from '../models/admin';
 import { AdministrateurProps } from '@/types';
+import { sendEmail } from '../nodemailer';
 
 interface getCurrentUserProps {
     currentUser:string;
+}
+
+
+export async function getAllUsers() {
+  await connectToDB();
+  return parseStringify(await Utilisateur.find().exec());
+}
+
+export async function activateUser(id: string) {
+  await connectToDB();
+  await Utilisateur.findByIdAndUpdate(id, { status: 'activé' });
+}
+
+export async function deactivateUser(id: string) {
+  await connectToDB();
+  await Utilisateur.findByIdAndUpdate(id, { status: 'desactivé' });
 }
 
 export async function getCurrentUserActions({ currentUser }: getCurrentUserProps) {
@@ -48,7 +65,7 @@ export async function userRegisterFunction({ nom, email, password }: userRegiste
             motDePasse: hashedPassword
         });
         await newUser.save();
-
+        await sendEmail({to:email, subject : "Bienvenue sur notre application",text:"<h3>Merci de vous être inscrit sur notre application !</h3>"})
         console.log("Utilisateur ajouté avec succès");
     } catch (error: any) {
         console.log("Échec de l'ajout de l'utilisateur : " + error.message);
@@ -83,3 +100,29 @@ if (user) {
     throw new Error(error.message);
 }
 }
+
+
+// Dans lib/actions/user.actions.ts
+
+export const updateUserProfile = async (data: {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  bio: string;
+}) => {
+  // Logique pour mettre à jour le profil utilisateur dans la base de données
+  // Exemple:
+  const response = await fetch('/api/update-profile', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error('Erreur lors de la mise à jour du profil');
+  }
+
+  return await response.json();
+};
