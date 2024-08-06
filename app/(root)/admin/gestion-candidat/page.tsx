@@ -1,6 +1,5 @@
 "use client";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react';
 import { getAllCandidatures, approveCandidature, rejectCandidature, getCandidat } from '@/lib/actions/candidats.actions';
 import { useRouter } from 'next/navigation';

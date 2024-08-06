@@ -12,14 +12,40 @@ interface getCurrentUserProps {
 }
 
 
-export async function getAllUsers() {
+export async function getAllUsers({ page = 1, limit = 10 }: { page: number; limit: number }) {
   await connectToDB();
-  return parseStringify(await Utilisateur.find().exec());
+  const skip = (page - 1) * limit;
+  const [users, totalUsers] = await Promise.all([
+    Utilisateur.find().skip(skip).limit(limit).exec(),
+    Utilisateur.countDocuments().exec()
+  ]);
+  return {
+    users: parseStringify(users),
+    totalUsers,
+  };
 }
 
-export async function activateUser(id: string) {
+export async function activateUser({id,email}: {id:string,email:string}) {
   await connectToDB();
   await Utilisateur.findByIdAndUpdate(id, { status: 'activé' });
+  const html = `
+<div style="font-family: Arial, sans-serif; color: #333;">
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqCARPNAbZnvG5C2AZnA7mLWrR8rO2_30Q&s" alt="Logo de notre application" style="width: 100px; height: auto;">
+  </div>
+  <h1 style="text-align: center; color: #4CAF50;">Votre compte a été activé</h1>
+  <p>Bonjour,</p>
+  <p>Nous sommes heureux de vous informer que votre compte sur notre application a été activé par notre administrateur.</p>
+  <p>Vous pouvez maintenant vous connecter et commencer à utiliser nos services :</p>
+  <ul>
+    <li><a href="https://www.votre-site.com/login">Se connecter</a></li>
+  </ul>
+  <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment.</p>
+  <p>Bonne journée,</p>
+  <p>L'équipe de notre application</p>
+</div>
+`;
+await sendEmail({to:email, subject : "Votre compte a été activé",html:html})
 }
 
 export async function deactivateUser(id: string) {
@@ -54,22 +80,45 @@ interface userRegisterFunctionProps {
 }
 
 export async function userRegisterFunction({ nom, email, password }: userRegisterFunctionProps) {
-    await connectToDB();
-    try {
-        // Hacher le mot de passe
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        const newUser = new Utilisateur({
-            nom: nom,
-            email: email,
-            motDePasse: hashedPassword
-        });
-        await newUser.save();
-        await sendEmail({to:email, subject : "Bienvenue sur notre application",text:"<h3>Merci de vous être inscrit sur notre application !</h3>"})
-        console.log("Utilisateur ajouté avec succès");
-    } catch (error: any) {
-        console.log("Échec de l'ajout de l'utilisateur : " + error.message);
-    }
+await connectToDB();
+try {
+    // Hacher le mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const newUser = new Utilisateur({
+        nom: nom,
+        email: email,
+        motDePasse: hashedPassword
+    });
+    await newUser.save();
+const html = `
+<div style="font-family: Arial, sans-serif; color: #333;">
+<div style="text-align: center; margin-bottom: 20px;">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqCARPNAbZnvG5C2AZnA7mLWrR8rO2_30Q&s" alt="Logo de notre application" style="width: 100px; height: auto;">
+</div>
+<h1 style="text-align: center; color: #4CAF50;">Bienvenue sur notre application</h1>
+<p>Bonjour ${nom},</p>
+<p>Merci de vous être inscrit sur notre application ! Nous sommes ravis de vous avoir parmi nous.</p>
+<p>Votre compte est actuellement en attente d'activation. Il sera actif dès que l'administrateur aura validé votre inscription.</p>
+<p>Voici quelques ressources pour vous aider à démarrer :</p>
+<ul>
+<li><a href="https://www.votre-site.com/guide-de-demarrage">Guide de démarrage</a></li>
+<li><a href="https://www.votre-site.com/faq">FAQ</a></li>
+<li><a href="https://www.votre-site.com/support">Support</a></li>
+</ul>
+<p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment.</p>
+<p>Bonne journée,</p>
+<p>L'équipe de notre application</p>
+<div style="text-align: center; margin-top: 20px;">
+<a href="https://www.votre-site.com" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Visitez notre site</a>
+</div>
+</div>
+`;
+await sendEmail({to:email, subject : "Bienvenue sur notre application",html:html})
+console.log("Utilisateur ajouté avec succès");
+} catch (error: any) {
+console.log("Échec de l'ajout de l'utilisateur : " + error.message);
+}
 }
 interface UserLoginFunctionProps {
     email : string;

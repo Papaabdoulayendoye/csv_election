@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 import { Button } from '@/components/ui/button';
-import { getCandidatesForElection, handleVoteActions } from '@/lib/actions/election.actions';
+import { getCandidatesForElection, getElectionById, handleVoteActions } from '@/lib/actions/election.actions';
 import { getCurrentUserActions } from '@/lib/actions/user.actions';
+import { toast } from 'react-toastify';
+import { ElectionProps } from '@/types';
 
 // Enregistrer les composants de graphique
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
@@ -24,28 +26,49 @@ const Modal = ({ children }: PropsWithChildren) => {
 const ElectionPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const electionId = params.id;
+  const [getElection, setGetElection] = useState<ElectionProps>();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [rankingData, setRankingData] = useState<any>({ labels: [], datasets: [] });
   const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  
+  const colors = [
+    'rgba(255, 99, 132, 0.8)',
+    'rgba(54, 162, 235, 0.8)',
+    'rgba(255, 206, 86, 0.8)',
+    'rgba(75, 192, 192, 0.8)',
+    'rgba(153, 102, 255, 0.8)',
+    'rgba(255, 159, 64, 0.8)',
+    'rgba(199, 199, 199, 0.8)',
+    'rgba(83, 102, 136, 0.8)',
+    'rgba(251, 120, 94, 0.8)',
+    'rgba(179, 204, 255, 0.8)',
+    'rgba(255, 183, 77, 0.8)',
+    'rgba(134, 207, 192, 0.8)',
+    'rgba(255, 101, 101, 0.8)',
+    'rgba(54, 153, 255, 0.8)',
+    'rgba(140, 140, 140, 0.8)'
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       const approvedCandidates = await getCandidatesForElection(electionId);
-      console.log("approvedCandidates", approvedCandidates);
+      const currentElection = await getElectionById(electionId);
+      setGetElection(currentElection);
       
       const labels = approvedCandidates.map((c: any) => c.fullName);
       const data = approvedCandidates.map((c: any) => c.votes);
-
+      const backgroundColors = data.map((_, index) => colors[index % colors.length]);
+      const borderColors = backgroundColors.map(color => color.replace('0.8', '1'));
       setCandidates(approvedCandidates);
       setRankingData({
         labels,
         datasets: [{
           label: 'Votes',
           data,
-          backgroundColor: 'rgba(52, 152, 219, 0.8)',
-          borderColor: 'rgba(52, 152, 219, 1)',
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
           borderWidth: 1
         }]
       });
@@ -54,14 +77,33 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
     fetchData();
   }, [electionId]);
 
-  const handleVote = async (candidateId: string) => {
+  const handleVote = async ({ candidateId, candidateName }: { candidateId: string, candidateName: string }) => {
     const userId = localStorage.getItem("currentUser");
-    if(!userId){
-        return;
+    if (!userId) {
+      return;
     }
-    const id = await getCurrentUserActions({currentUser:userId});
-    await handleVoteActions({candidateId,electionId,userId:id._id})
-    window.location.reload();
+    setSelectedCandidate(candidateId);
+    setShowModal(true);
+  };
+
+  const confirmVote = async () => {
+    const userId = localStorage.getItem("currentUser");
+    if (!userId) {
+      return;
+    }
+    const id = await getCurrentUserActions({ currentUser: userId });
+    const response = await handleVoteActions({ candidateId: selectedCandidate!, electionId, candidateName: "", userId: id._id });
+    setShowModal(false);
+    if (response?.message) {
+      if (response?.type === 'success') {
+        toast.success(response?.message);
+      } else {
+        toast.error(response?.message);
+      }
+    }
+    setTimeout(() => {
+      window.location.reload();
+    }, 3500);
   };
 
   const loggout = () => {
@@ -83,7 +125,7 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
         </nav>
 
         <main className="container mx-auto mt-8 px-4">
-          <h1 className="text-3xl font-bold text-primary mb-8 text-center">Élection {electionId}</h1>
+          <h1 className="text-3xl font-bold text-primary mb-8 text-center">{getElection?.titre}</h1>
 
           <div className="flex justify-center mb-4">
             <Button onClick={() => setChartType('bar')} className={`mr-2 ${chartType === 'bar' ? 'bg-secondary text-white' : 'bg-white text-gray-800'}`}>Graphique en Barres</Button>
@@ -106,7 +148,7 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
                     <div className="p-4 text-center">
                       <h3 className="text-xl font-semibold text-primary">{candidate.fullName}</h3>
                       <p className="text-gray-600 text-sm mt-2">{candidate.bio}</p>
-                      <Button onClick={() => handleVote(candidate._id)} className="mt-4 w-full bg-secondary text-white px-4 py-2 rounded text-sm hover:bg-primary transition duration-300">
+                      <Button onClick={() => handleVote({ candidateId: candidate._id, candidateName: candidate.fullName })} className="mt-4 w-full bg-secondary text-white px-4 py-2 rounded text-sm hover:bg-primary transition duration-300">
                         Voter
                       </Button>
                     </div>
@@ -131,8 +173,8 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
                   <Pie data={rankingData} options={{
                     responsive: true,
                     plugins: {
-                      legend: { display: true, position: 'bottom' },
-                      title: { display: true, text: 'Répartition des Votes' }
+                      legend: { position: 'right' },
+                      title: { display: true, text: 'Classement des Candidats' }
                     }
                   }} />
                 )}
@@ -140,6 +182,17 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
             </div>
           </div>
         </main>
+
+        {showModal && (
+          <Modal>
+            <h2 className="text-xl font-semibold mb-4">Confirmer votre vote</h2>
+            <p className="mb-4">Voulez-vous vraiment voter pour ce candidat ?</p>
+            <div className="flex justify-end">
+              <Button onClick={() => setShowModal(false)} className="bg-gray-300 text-gray-800 mr-2">Annuler</Button>
+              <Button onClick={confirmVote} className="bg-secondary text-white">Confirmer</Button>
+            </div>
+          </Modal>
+        )}
       </div>
     </>
   );

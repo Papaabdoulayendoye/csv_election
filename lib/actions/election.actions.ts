@@ -22,13 +22,13 @@ const newElection = new Election({
 });
 
 await newElection.save();
-return { message: "Élection créée avec succès" };
+return { message: "Élection créée avec succès",type:'success'};
 } catch (error: any) {
 throw new Error("Échec de la création de l'élection: " + error.message);
 }
 }
 
-export async function fetchElections(pageNumber = 1, pageSize = 20) {
+export async function fetchElections(pageNumber = 1, pageSize = 10) {
   await connectToDB();
   const skipAmount = (pageNumber - 1) * pageSize;
 
@@ -70,23 +70,20 @@ export async function fetchElections(pageNumber = 1, pageSize = 20) {
   }
 }
 
-export const handleVoteActions = async ({candidateId,electionId, userId}:{candidateId: string, userId:string,electionId:string}) => {
+export const handleVoteActions = async ({candidateId,electionId,candidateName, userId}:{candidateId: string, userId:string,electionId:string,candidateName:string}) => {
   try {
     await connectToDB();
-    console.log("electionId", electionId);
-    console.log("candidateId", candidateId);
-    console.log("userId", userId);
     const election = await Election.findById(electionId);
     if (!election) {
       throw new Error('Election not found');
     }
     const existingVote = election.votes.find((vote:any) => vote.electeurId.toString() === userId);
     if (existingVote) {
-      throw new Error('Vous avez déjà voté');
+      return {message:'Vous avez déjà voté pour un candidat',type:'error'};
     }
     election.votes.push({ electeurId: userId, candidatId: candidateId });
     await election.save();
-    console.log("Vote enregistré avec succès !");
+    return {message:`Vous avez voté pour le candidat ${candidateName}`,type:'success'};
   } catch (error) {
     console.error('Error voting for candidate:', error);
   }
@@ -120,5 +117,29 @@ export const getCandidatesForElection = async (electionId: string) => {
   } catch (error) {
     console.error('Erreur lors de la récupération des candidats pour l\'élection:', error);
     return [];
+  }
+};
+
+
+export const getElectionById = async (electionId:string) => {
+  if (!electionId) {
+    throw new Error('ID d\'élection requis');
+  }
+
+  try {
+    // Utilisez `populate` pour inclure les détails des candidats et des votes
+    const election = await Election.findById(electionId)
+      .populate('candidats') // Remplacez par le modèle approprié si nécessaire
+      .populate('votes.electeurId') // Remplacez par le modèle approprié si nécessaire
+      .populate('votes.candidatId'); // Remplacez par le modèle approprié si nécessaire
+
+    if (!election) {
+      throw new Error('Élection non trouvée');
+    }
+
+    return parseStringify(election);
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'élection :', error);
+    throw error;
   }
 };

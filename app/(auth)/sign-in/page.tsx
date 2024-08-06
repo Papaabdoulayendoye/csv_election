@@ -70,7 +70,7 @@ return (
                 <FormControl>
                 <Input type="email" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className='text-red-500' />
             </FormItem>
             )}
         />
@@ -83,7 +83,7 @@ return (
                 <FormControl>
                 <Input type="password" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className='text-red-500'/>
             </FormItem>
             )}
         />

@@ -7,7 +7,17 @@ motDePasse: { type: String, required: true },
 telephone: { type: String, required: false },
 bio: { type: String, required: false },
 photo: { type: String, required: false }, // URL ou chemin de fichier
-status: { type: String, enum: ['activé', 'desactivité'], default: 'desactivité' },
+status: { type: String, enum: ['activé', 'desactivé','en attente'], default: 'en attente' },
+formation: { 
+    type: String, 
+    enum: ['GLAR', 'RT', 'GEER', 'IM'], 
+    required: false 
+  }, // GLAR (Génie logiciel et Réseaux), RT (Télécommunication - Réseaux), GEER (Génie électrique et Energies renouvelables), IM (Informatique et Multimédia)
+  classe: { 
+    type: String, 
+    enum: ['L1', 'L2', 'L3'], 
+    required: false 
+  }, // Licence 1, Licence 2, Licence 3
 votes: [
 {
     electionId: {

@@ -42,7 +42,7 @@ const SignUp = () => {
         await userRegisterFunction({nom,email,password});
       setTimeout(() => {
         setSubmitting(false);
-        router.push('/dashboard');
+        router.push('/sign-in');
       }, 3500);
     } catch (error) {
       setSubmitting(false);
@@ -66,11 +66,11 @@ const SignUp = () => {
               name="nom"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                  <FormLabel>Prenom & Nom</FormLabel>
                   <FormControl>
-                    <Input type="nom" {...field} />
+                    <Input type="nom" {...field} placeholder='John Doe' />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -81,9 +81,9 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Adresse e-mail</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input type="email" {...field} placeholder='john.doe@gmail.com'/>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -94,9 +94,9 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} placeholder='******' />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />
@@ -107,9 +107,9 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Confirmer le mot de passe</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} placeholder='******' />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500' />
                 </FormItem>
               )}
             />

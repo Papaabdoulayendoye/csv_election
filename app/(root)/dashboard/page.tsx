@@ -12,7 +12,6 @@ import { fetchElections } from '@/lib/actions/election.actions';
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -91,18 +90,13 @@ const DashboardPage = () => {
   };
 
   const sortedElections = sortElections(filteredElections);
-  const loggout = () => {
-    localStorage.clear();
-  };
 
   const handleElectionClick = (id: string) => {
     router.push(`/election/${id}`);
   };
 
   const handleApplyClick = (electionId: string) => {
-    // Logique pour postuler à l'élection
     console.log(`Postuler pour l'élection ${electionId}`);
-    // Rediriger ou afficher un formulaire de candidature
   };
 
   const createElectionCard = (election: any) => {
@@ -142,11 +136,11 @@ const DashboardPage = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "en cours":
-        return "text-green-600";
+        return "text-green-500";
       case "à venir":
-        return "text-blue-600";
+        return "text-blue-500";
       case "terminée":
-        return "text-red-600";
+        return "text-red-500";
       default:
         return "";
     }
@@ -158,17 +152,16 @@ const DashboardPage = () => {
 
   const formatDateRange = (start: string, end: string) => {
     return `${new Date(start).toLocaleString()} - ${new Date(end).toLocaleString()}`;
-    // return `${new Date(start).toLocaleDateString()} - ${new Date(end).toLocaleDateString()}`;
   };
 
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);
-    setCurrentPage(1); // Réinitialiser la pagination lorsque le filtre change
+    setCurrentPage(1);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Réinitialiser la pagination lorsque la recherche change
+    setCurrentPage(1);
   };
 
   const handlePageChange = (newPage: number) => {

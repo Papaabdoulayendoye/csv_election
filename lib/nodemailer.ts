@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.example.com', // Remplacez par votre hôte SMTP
+  host: 'smtp.gmail.com', // Remplacez par votre hôte SMTP
   port: 587, // ou 465 pour SSL
   secure: false, // true pour port 465, false pour les autres ports
   auth: {
@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-export const sendEmail = async ({to, subject, text}:{to:string, subject:string, text:string}) => {
+export const sendEmail = async ({to, subject, html}:{to:string, subject:string, html:string}) => {
     console.log('====================================');
     console.log("GMAIL",process.env.USER_MAIL!);
     console.log('====================================');
@@ -18,7 +18,7 @@ export const sendEmail = async ({to, subject, text}:{to:string, subject:string, 
     from: process.env.USER_MAIL!,
     to,
     subject,
-    text
+    html
   };
 
   try {

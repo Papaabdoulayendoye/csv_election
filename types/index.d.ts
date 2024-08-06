@@ -20,7 +20,7 @@ export interface UserProps {
   telephone?: string;
   bio: string;
   photo?: string;
-  status: 'activé' | 'desactivé';
+  status: 'activé' | 'desactivé' | 'en attente';
   votes: Vote[];
   candidatures: Candidature[];
   createdAt: Date;
