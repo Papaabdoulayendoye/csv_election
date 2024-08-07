@@ -14,6 +14,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import * as z from 'zod'
 import { RegisterValidation } from "@/lib/validations/register";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,6 +39,8 @@ const SignUp = () => {
     defaultValues: {
       nom: '',
       email: '',
+      formation: '',
+      classe: '',
       password: '',
       confirmPassword: '',
     },
@@ -83,6 +94,55 @@ const SignUp = () => {
                   <FormControl>
                     <Input type="email" {...field} placeholder='john.doe@gmail.com'/>
                   </FormControl>
+                  <FormMessage className='text-red-500' />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="formation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Formation</FormLabel>
+                    <Select>
+                  <FormControl>
+      <SelectTrigger >
+        <SelectValue placeholder="Choisi ta formation" />
+      </SelectTrigger>
+                  </FormControl>
+      <SelectContent>
+        <SelectGroup className='bg-gray-300'>
+          <SelectItem value='GLAR'>GLAR (Génie logiciel et Réseaux)</SelectItem>
+                <SelectItem value='RT'>RT (Télécommunication - Réseaux)</SelectItem>
+                <SelectItem value='GEER'>GEER (Génie électrique et Energies renouvelables)</SelectItem>
+                <SelectItem value='IM'>IM (Informatique et Multimédia)</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+                  <FormMessage className='text-red-500' />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="classe"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Classe</FormLabel>
+                    <Select {...field}>
+                  <FormControl>
+      <SelectTrigger className="">
+        <SelectValue placeholder="Choisi ta classe" />
+      </SelectTrigger>
+        </FormControl>
+      <SelectContent>
+        <SelectGroup className='bg-gray-300'>
+          <SelectItem value='L1'>L1 (Licence 1)</SelectItem>
+          <SelectItem value='L2'>L2 (Licence 2)</SelectItem>
+          <SelectItem value='L3'>L3 (Licence 3)</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
                   <FormMessage className='text-red-500' />
                 </FormItem>
               )}

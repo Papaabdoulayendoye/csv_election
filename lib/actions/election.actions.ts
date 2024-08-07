@@ -7,26 +7,91 @@ import Election from '../models/election';
 import { ElectionProps } from '@/types';
 import { parseStringify } from '../utils';
 import Candidature from '../models/candidat';
+import { sendEmails } from '../nodemailer';
+import Utilisateur from '../models/utilisateur';
 
 export async function createElection(electionData: ElectionProps) {
-await connectToDB();
-try {
-const newElection = new Election({
-    titre: electionData.titre,
-    dateDebut: electionData.dateDebut,
-    dateFin: electionData.dateFin,
-    description: electionData.description,
-    candidats: electionData.candidats,
-    votes: electionData.votes,
-    createAt: Date.now(),
-});
+  await connectToDB();
 
-await newElection.save();
-return { message: "Élection créée avec succès",type:'success'};
-} catch (error: any) {
-throw new Error("Échec de la création de l'élection: " + error.message);
+  try {
+    const newElection = new Election({
+      titre: electionData.titre,
+      dateDebut: electionData.dateDebut,
+      dateFin: electionData.dateFin,
+      description: electionData.description,
+      typeElection: electionData.typeElection,
+      classeFormation: electionData.classeFormation,
+    });
+    await newElection.save();
+    // Send emails based on election type
+    if (electionData.typeElection === 'école') {
+      const users = await Utilisateur.find({}); // Get all users
+      const subject = "Nouvelle élection créée";
+      const html = `<div style="font-family: Arial, sans-serif; color: #333;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqCARPNAbZnvG5C2AZnA7mLWrR8rO2_30Q&s" alt="Logo de notre application" style="width: 100px; height: auto;">
+          </div>
+          <h1 style="text-align: center; color: #4CAF50;">Nouvelle élection créée</h1>
+          <p>Bonjour,</p>
+          <p>Nous sommes heureux de vous informer qu'une nouvelle élection a été créée.</p>
+          <p>En plus d'être un électeur, vous pouvez postuler pour être un candidat.</p>
+          <p>Merci de vous connecter à notre application pour plus de détails.</p>
+          <ul>
+            <li><a href="https://www.votre-site.com/login">Se connecter</a></li>
+          </ul>
+          <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment.</p>
+          <p>Bonne journée,</p>
+          <p>L'équipe de notre application</p>
+        </div>`;
+      await sendEmails(users, subject, html);
+    } else if (electionData.typeElection === 'classe' && electionData.classeFormation) {
+      const users = await Utilisateur.find({ classe: electionData.classeFormation }); // Get users of the specific class
+      const subject = "Nouvelle élection de classe créée";
+      const html = `<div style="font-family: Arial, sans-serif; color: #333;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqCARPNAbZnvG5C2AZnA7mLWrR8rO2_30Q&s" alt="Logo de notre application" style="width: 100px; height: auto;">
+          </div>
+          <h1 style="text-align: center; color: #4CAF50;">Nouvelle élection de classe créée</h1>
+          <p>Bonjour,</p>
+          <p>Nous sommes heureux de vous informer qu'une nouvelle élection de classe a été créée.</p>
+          <p>Vous êtes un électeur et vous pouvez également postuler pour être un candidat.</p>
+          <p>Merci de vous connecter à notre application pour plus de détails.</p>
+          <ul>
+            <li><a href="https://www.votre-site.com/login">Se connecter</a></li>
+          </ul>
+          <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment.</p>
+          <p>Bonne journée,</p>
+          <p>L'équipe de notre application</p>
+        </div>`;
+      await sendEmails(users, subject, html);
+    }
+
+    return { message: "Élection créée avec succès", type: 'success' };
+  } catch (error: any) {
+    throw new Error("Échec de la création de l'élection: " + error.message);
+  }
 }
-}
+
+
+// export async function createElection(electionData: ElectionProps) {
+// await connectToDB();
+// try {
+// const newElection = new Election({
+//     titre: electionData.titre,
+//     dateDebut: electionData.dateDebut,
+//     dateFin: electionData.dateFin,
+//     description: electionData.description,
+//     candidats: electionData.candidats,
+//     votes: electionData.votes,
+//     createAt: Date.now(),
+// });
+
+// await newElection.save();
+// return { message: "Élection créée avec succès",type:'success'};
+// } catch (error: any) {
+// throw new Error("Échec de la création de l'élection: " + error.message);
+// }
+// }
 
 export async function fetchElections(pageNumber = 1, pageSize = 10) {
   await connectToDB();

@@ -68,7 +68,8 @@ titre: string;
 dateDebut: string;
 dateFin: string;
 description: string;
-category:string;
+typeElection:string;
+classeFormation?:string | null;
 candidats?: ElectionCandidat[];
 votes?: ElectionVote[];
 }

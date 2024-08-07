@@ -86,7 +86,9 @@
   .remove-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
-
+  .remove-scrollbar1 {
+    overflow-y: initial;
+  }
   .remove-scrollbar::-webkit-scrollbar-thumb {
     background: transparent;
     border-radius: 0px;

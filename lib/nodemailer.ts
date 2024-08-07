@@ -28,3 +28,25 @@ export const sendEmail = async ({to, subject, html}:{to:string, subject:string, 
     console.error('Error sending email:', error);
   }
 };
+
+export const sendEmails = async (users: any[], subject: string, html: string) => {
+  const mailOptions = {
+    from: process.env.USER_MAIL!,
+    subject: subject,
+    html,
+  };
+
+  for (const user of users) {
+    if (user.status === 'activé') {
+      try {
+        await transporter.sendMail({
+          ...mailOptions,
+          to: user.email,
+        });
+        console.log(`Email sent to ${user.email}`);
+      } catch (error) {
+        console.error(`Failed to send email to ${user.email}:`, error);
+      }
+    }
+  }
+}

@@ -18,8 +18,8 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { createElection } from '@/lib/actions/election.actions';
 import { Loader2 } from 'lucide-react';
-import { ElectionProps } from '@/types';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function CreateElection() {
   const router = useRouter();
@@ -29,19 +29,27 @@ export default function CreateElection() {
     defaultValues: {
       titre: '',
       description: '',
-      category: '',
+      typeElection: 'école',
+      classeFormation: '',
       dateDebut: '',
       dateFin: '',
     },
   });
 
-  const { handleSubmit, control,reset } = form;
-
+  const { handleSubmit, control,reset,watch } = form;
+  const typeElection = watch('typeElection');
   const onSubmit = async (values: z.infer<typeof ElectionValidation>) => {
     // Envoi des données au serveur ou sauvegarde locale
     setSubmitting(true);
+    console.log('====================================');
+    console.log(values);
+    console.log('====================================');
 try {
-    await createElection(values);
+    const response = await createElection(values);
+    if (response.type === 'success') {
+      toast.success(response.message);
+      return;
+    }
     setTimeout(() => {
     setSubmitting(false);
     router.push('/dashboard');
@@ -50,9 +58,7 @@ try {
     setSubmitting(false);
     console.error(error);
 }
-    // console.log('Données de l\'élection:', values);
-
-  };
+};
 
   const initializeDatePickers = () => {
     flatpickr("#start-date", {
@@ -129,22 +135,56 @@ try {
             />
             <FormField
               control={control}
-              name="category"
+              name="typeElection"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Catégorie</FormLabel>
+                  <FormLabel>Type d'élection</FormLabel>
                   <FormControl>
-                    <select className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {...field}>
-                      <option value="">Sélectionnez une catégorie</option>
-                      <option value="local">Locale</option>
-                      <option value="state">Régionale</option>
-                      <option value="national">Nationale</option>
+                    <select
+                      className="shadow bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      {...field}
+                    >
+                      <option value="">Sélectionnez un type</option>
+                      <option value="classe">Classe</option>
+                      <option value="école">École</option>
                     </select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            {typeElection === 'classe' && (
+              <FormField
+                control={control}
+                name="classeFormation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Classe et Formation</FormLabel>
+                    <FormControl>
+                      <select
+                        className="shadow bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        {...field}
+                      >
+                        <option value="">Sélectionnez la classe et la formation</option>
+                        <option value="L1 GLAR">L1 GLAR</option>
+                        <option value="L2 GLAR">L2 GLAR</option>
+                        <option value="L3 GLAR">L3 GLAR</option>
+                        <option value="L1 RT">L1 RT</option>
+                        <option value="L2 RT">L2 RT</option>
+                        <option value="L3 RT">L3 RT</option>
+                        <option value="L1 GEER">L1 GEER</option>
+                        <option value="L2 GEER">L2 GEER</option>
+                        <option value="L3 GEER">L3 GEER</option>
+                        <option value="L1 IM">L1 IM</option>
+                        <option value="L2 IM">L2 IM</option>
+                        <option value="L3 IM">L3 IM</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <div className="mb-4 flex space-x-4">
               <div className="w-1/2">
                 <FormField
