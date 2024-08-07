@@ -25,7 +25,7 @@ export async function createElection(electionData: ElectionProps) {
     await newElection.save();
     // Send emails based on election type
     if (electionData.typeElection === 'école') {
-      const users = await Utilisateur.find({}); // Get all users
+      const users = await Utilisateur.find({status: 'activé'}); // Get all users
       const subject = "Nouvelle élection créée";
       const html = `<div style="font-family: Arial, sans-serif; color: #333;">
           <div style="text-align: center; margin-bottom: 20px;">

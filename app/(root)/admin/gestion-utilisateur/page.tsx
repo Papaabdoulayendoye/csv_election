@@ -185,7 +185,7 @@ const AdminUsers = () => {
                         </button>
                       ) : user.status === 'en attente' ? (
                         <button
-                          onClick={() => handleDeactivate(user._id)}
+                          onClick={() => handleActivate({ id: user._id, email: user.email })}
                           className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700 transition duration-300"
                         >
                           Activer

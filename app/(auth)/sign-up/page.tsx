@@ -48,9 +48,9 @@ const SignUp = () => {
 
   const onSubmit = async (values: z.infer<typeof RegisterValidation>) => {
     setSubmitting(true);
-    const {nom,email,password} = values;
+    const {nom,email,password,formation,classe} = values;
     try {
-        await userRegisterFunction({nom,email,password});
+        await userRegisterFunction({nom,email,password,formation,classe});
       setTimeout(() => {
         setSubmitting(false);
         router.push('/sign-in');
@@ -98,55 +98,50 @@ const SignUp = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="formation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Formation</FormLabel>
-                    <Select>
-                  <FormControl>
-      <SelectTrigger >
-        <SelectValue placeholder="Choisi ta formation" />
-      </SelectTrigger>
-                  </FormControl>
-      <SelectContent>
-        <SelectGroup className='bg-gray-300'>
-          <SelectItem value='GLAR'>GLAR (Génie logiciel et Réseaux)</SelectItem>
-                <SelectItem value='RT'>RT (Télécommunication - Réseaux)</SelectItem>
-                <SelectItem value='GEER'>GEER (Génie électrique et Energies renouvelables)</SelectItem>
-                <SelectItem value='IM'>IM (Informatique et Multimédia)</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-                  <FormMessage className='text-red-500' />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="classe"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Classe</FormLabel>
-                    <Select {...field}>
-                  <FormControl>
-      <SelectTrigger className="">
-        <SelectValue placeholder="Choisi ta classe" />
-      </SelectTrigger>
-        </FormControl>
-      <SelectContent>
-        <SelectGroup className='bg-gray-300'>
-          <SelectItem value='L1'>L1 (Licence 1)</SelectItem>
-          <SelectItem value='L2'>L2 (Licence 2)</SelectItem>
-          <SelectItem value='L3'>L3 (Licence 3)</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-                  <FormMessage className='text-red-500' />
-                </FormItem>
-              )}
-            />
+<FormField
+  control={form.control}
+  name="formation"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Formation</FormLabel>
+      <FormControl>
+        <select
+          className="shadow bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          {...field}
+        >
+          <option value="">Choisi ta formation</option>
+          <option value="GLAR">GLAR (Génie logiciel et Réseaux)</option>
+          <option value="RT">RT (Télécommunication - Réseaux)</option>
+          <option value="GEER">GEER (Génie électrique et Energies renouvelables)</option>
+          <option value="IM">IM (Informatique et Multimédia)</option>
+        </select>
+      </FormControl>
+      <FormMessage className="text-red-500" />
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="classe"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Classe</FormLabel>
+      <FormControl>
+        <select
+          className="shadow bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          {...field}
+        >
+          <option value="">Choisi ta classe</option>
+          <option value="L1">L1 (Licence 1)</option>
+          <option value="L2">L2 (Licence 2)</option>
+          <option value="L3">L3 (Licence 3)</option>
+        </select>
+      </FormControl>
+      <FormMessage className="text-red-500" />
+    </FormItem>
+  )}
+/>
             <FormField
               control={form.control}
               name="password"

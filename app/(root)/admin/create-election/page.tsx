@@ -48,12 +48,12 @@ try {
     const response = await createElection(values);
     if (response.type === 'success') {
       toast.success(response.message);
+      setTimeout(() => {
+      setSubmitting(false);
+      router.push('/dashboard');
+      }, 3500);
       return;
     }
-    setTimeout(() => {
-    setSubmitting(false);
-    router.push('/dashboard');
-    }, 3500);
 } catch (error) {
     setSubmitting(false);
     console.error(error);

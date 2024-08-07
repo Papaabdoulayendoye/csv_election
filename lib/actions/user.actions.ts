@@ -77,9 +77,12 @@ interface userRegisterFunctionProps {
     nom: string; 
     email: string; 
     password: string ;
+    formation: string;
+    classe:string;
+    // classeFormation?: string;
 }
 
-export async function userRegisterFunction({ nom, email, password }: userRegisterFunctionProps) {
+export async function userRegisterFunction({ nom, email, password,formation,classe }: userRegisterFunctionProps) {
 await connectToDB();
 try {
     // Hacher le mot de passe
@@ -88,7 +91,9 @@ try {
     const newUser = new Utilisateur({
         nom: nom,
         email: email,
-        motDePasse: hashedPassword
+        motDePasse: hashedPassword,
+        formation:formation,
+        classe:`${classe} ${formation}`
     });
     await newUser.save();
 const html = `

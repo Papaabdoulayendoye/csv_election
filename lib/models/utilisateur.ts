@@ -15,9 +15,10 @@ formation: {
   }, // GLAR (Génie logiciel et Réseaux), RT (Télécommunication - Réseaux), GEER (Génie électrique et Energies renouvelables), IM (Informatique et Multimédia)
   classe: { 
     type: String, 
-    enum: ['L1', 'L2', 'L3'], 
+    // enum: ['L1', 'L2', 'L3'], 
     required: false 
-  }, // Licence 1, Licence 2, Licence 3
+  },
+  // classeFormation: {type : String},
 votes: [
 {
     electionId: {
