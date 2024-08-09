@@ -8,13 +8,13 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PostulerValidation } from '@/lib/validations/candidature';
 import { createCandidature } from '@/lib/actions/candidats.actions'; // Adjust the import as needed
-import { getCurrentUserActions } from '@/lib/actions/user.actions';
+import { getCurrentUserActions,getEligibleUsersForElection } from '@/lib/actions/user.actions';
+import { toast } from 'react-toastify';
 
 const Postuler = ({ params }: { params: { id: string } }) => {
     const electionId = params.id;
@@ -76,26 +76,31 @@ const Postuler = ({ params }: { params: { id: string } }) => {
         }
 
         try {
-            if (user) {
-                await createCandidature({
-                    utilisateurId: user._id,
-                    electionId,
-                    fullName,
-                    email,
-                    phone,
-                    bio,
-                    photo,
-                });
-                setSubmitting(false);
-                setShowConfirmation(true);
-                form.reset();
-                setPhotoPreview(null);
-                setTimeout(() => {
-                    router.push('/dashboard')
-                }, 2000);
-            } else {
+            if (!user) {
                 throw new Error("Utilisateur non connecté.");
             }
+            const eligibleUsers = await getEligibleUsersForElection(electionId);
+            const isEligible = eligibleUsers.some(eligibleUser => eligibleUser._id.toString() === user._id.toString());
+            if (!isEligible) {
+                toast.error("Vous n'êtes pas éligible pour cette élection.");
+                throw new Error("Vous n'êtes pas éligible pour cette élection.");
+            }
+            await createCandidature({
+                utilisateurId: user._id,
+                electionId,
+                fullName,
+                email,
+                phone,
+                bio,
+                photo,
+            });
+        setSubmitting(false);
+        setShowConfirmation(true);
+        form.reset();
+        setPhotoPreview(null);
+        setTimeout(() => {
+            router.push('/dashboard');
+        }, 2000);
         } catch (error) {
             console.error("Erreur lors de la soumission de la candidature :", error);
             setSubmitting(false);

@@ -81,7 +81,9 @@ const AdminUsers = () => {
   const pendingUsers = users.filter(u => u.status === 'en attente').length;
   const inactiveUsers = users.filter(u => u.status === 'desactivé').length;
   const totalPages = Math.ceil(totalUsers / itemsPerPage);
-
+  console.log('====================================');
+  console.log("users",users);
+  console.log('====================================');
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -139,8 +141,10 @@ const AdminUsers = () => {
                 <TableRow>
                   <TableHead className="text-white py-2 px-4">Nom</TableHead>
                   <TableHead className="text-white py-2 px-4">Email</TableHead>
-                  <TableHead className="text-white py-2 px-4">Téléphone</TableHead>
-                  <TableHead className="text-white py-2 px-4">Bio</TableHead>
+                  {/* <TableHead className="text-white py-2 px-4">Téléphone</TableHead>
+                  <TableHead className="text-white py-2 px-4">Bio</TableHead> */}
+                  <TableHead className="text-white py-2 px-4">Formation</TableHead>
+                  <TableHead className="text-white py-2 px-4">Classe</TableHead>
                   <TableHead className="text-white py-2 px-4">Photo</TableHead>
                   <TableHead className="text-white py-2 px-4">Statut</TableHead>
                   <TableHead className="text-white py-2 px-4">Actions</TableHead>
@@ -151,8 +155,10 @@ const AdminUsers = () => {
                   <TableRow key={user._id} className="border-t border-gray-700">
                     <TableCell className="py-2 px-4 text-white">{user.nom}</TableCell>
                     <TableCell className="py-2 px-4 text-white">{user.email}</TableCell>
-                    <TableCell className="py-2 px-4 text-white">{user.telephone || 'N/A'}</TableCell>
-                    <TableCell className="py-2 px-4 text-white">{user.bio || 'N/A'}</TableCell>
+                    <TableCell className="py-2 px-4 text-white">{user.formation}</TableCell>
+                    <TableCell className="py-2 px-4 text-white">{user.classe}</TableCell>
+                    {/* <TableCell className="py-2 px-4 text-white">{user.telephone || 'N/A'}</TableCell>
+                    <TableCell className="py-2 px-4 text-white">{user.bio || 'N/A'}</TableCell> */}
                     <TableCell className="py-2 px-4 text-white">
                       {user.photo ? (
                         <Image src={user.photo} alt={user.nom} width={50} height={50} />

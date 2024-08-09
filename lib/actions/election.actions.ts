@@ -9,6 +9,7 @@ import { parseStringify } from '../utils';
 import Candidature from '../models/candidat';
 import { sendEmails } from '../nodemailer';
 import Utilisateur from '../models/utilisateur';
+import { getEligibleUsersForElection } from './user.actions';
 
 export async function createElection(electionData: ElectionProps) {
   await connectToDB();
@@ -135,24 +136,59 @@ export async function fetchElections(pageNumber = 1, pageSize = 10) {
   }
 }
 
-export const handleVoteActions = async ({candidateId,electionId,candidateName, userId}:{candidateId: string, userId:string,electionId:string,candidateName:string}) => {
+export const handleVoteActions = async ({ candidateId, electionId, candidateName, userId }: 
+{ candidateId: string, userId: string, electionId: string, candidateName: string }) => {
   try {
     await connectToDB();
+
     const election = await Election.findById(electionId);
     if (!election) {
       throw new Error('Election not found');
     }
-    const existingVote = election.votes.find((vote:any) => vote.electeurId.toString() === userId);
-    if (existingVote) {
-      return {message:'Vous avez déjà voté pour un candidat',type:'error'};
+
+    // Get the list of eligible users for this election
+    const eligibleUsers = await getEligibleUsersForElection(electionId);
+
+    // Check if the current user is eligible to vote
+    const isEligible = eligibleUsers.some((user: typeof Utilisateur) => user._id.toString() === userId);
+    if (!isEligible) {
+      return { message: 'Vous n\'êtes pas éligible pour voter dans cette élection', type: 'error' };
     }
+
+    // Check if the user has already voted
+    const existingVote = election.votes.find((vote: any) => vote.electeurId.toString() === userId);
+    if (existingVote) {
+      return { message: 'Vous avez déjà voté pour un candidat', type: 'error' };
+    }
+
+    // Register the vote
     election.votes.push({ electeurId: userId, candidatId: candidateId });
     await election.save();
-    return {message:`Vous avez voté pour le candidat ${candidateName}`,type:'success'};
+
+    return { message: `Vous avez voté pour le candidat ${candidateName}`, type: 'success' };
   } catch (error) {
     console.error('Error voting for candidate:', error);
+    return { message: 'Erreur lors du vote', type: 'error' };
   }
 };
+// export const handleVoteActions = async ({candidateId,electionId,candidateName, userId}:{candidateId: string, userId:string,electionId:string,candidateName:string}) => {
+//   try {
+//     await connectToDB();
+//     const election = await Election.findById(electionId);
+//     if (!election) {
+//       throw new Error('Election not found');
+//     }
+//     const existingVote = election.votes.find((vote:any) => vote.electeurId.toString() === userId);
+//     if (existingVote) {
+//       return {message:'Vous avez déjà voté pour un candidat',type:'error'};
+//     }
+//     election.votes.push({ electeurId: userId, candidatId: candidateId });
+//     await election.save();
+//     return {message:`Vous avez voté pour le candidat ${candidateName}`,type:'success'};
+//   } catch (error) {
+//     console.error('Error voting for candidate:', error);
+//   }
+// };
 
 
 export const getCandidatesForElection = async (electionId: string) => {

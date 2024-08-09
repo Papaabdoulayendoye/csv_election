@@ -19,6 +19,8 @@ export interface UserProps {
   motDePasse: string;
   telephone?: string;
   bio: string;
+  formation:string;
+  classe:string;
   photo?: string;
   status: 'activé' | 'desactivé' | 'en attente';
   votes: Vote[];

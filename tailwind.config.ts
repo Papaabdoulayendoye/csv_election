@@ -37,6 +37,19 @@ const config = {
           600: "#3E1716",
           700: "#F24E43",
         },
+        black: {
+          1: "#00214F",
+          2: "#344054",
+        },
+        gray: {
+          25: "#FCFCFD",
+          200: "#EAECF0",
+          300: "#D0D5DD",
+          500: "#667085",
+          600: "#475467",
+          700: "#344054",
+          900: "#101828",
+        },
         light: {
           200: "#E8E9E9",
         },
@@ -51,6 +64,7 @@ const config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        "ibm-plex-serif": "var(--font-ibm-plex-serif)"
       },
       backgroundImage: {
         appointments: "url('/assets/images/appointments-bg.png')",

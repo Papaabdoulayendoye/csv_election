@@ -6,6 +6,7 @@ import { parseStringify } from '../utils';
 import Administrateur from '../models/admin';
 import { AdministrateurProps } from '@/types';
 import { sendEmail } from '../nodemailer';
+import Election from '../models/election';
 
 interface getCurrentUserProps {
     currentUser:string;
@@ -137,22 +138,30 @@ const user = await Utilisateur.findOne({ email });
 const admin = await Administrateur.findOne({ email }) as AdministrateurProps;
 
 if (user) {
-    const isPasswordValid = await bcrypt.compare(password, user.motDePasse);
-    if (!isPasswordValid) {
-        throw new Error("Le mot de passe que vous avez entré est incorrect");
+    if (user.status=== "activé") {
+      const isPasswordValid = await bcrypt.compare(password, user.motDePasse);
+      if (!isPasswordValid) {
+          throw new Error("Le mot de passe que vous avez entré est incorrect");
+      }
+      return parseStringify(user);
+    }else{
+      throw new Error("Votre Utilisateur n'est pas activé");
     }
-    return parseStringify(user);
-} else if (admin) {
-    if (password !== parseStringify(admin?.motDePasse)) {
-        throw new Error("Mot de passe incorrect");
-    }
-    return parseStringify(admin);
-} else {
-    throw new Error("Utilisateur ou administrateur non trouvé");
-}
-} catch (error: any) {
-    throw new Error(error.message);
-}
+    
+  }else if(admin)
+  {
+      if (password !== parseStringify(admin?.motDePasse)) {
+          throw new Error("Mot de passe incorrect");
+      }
+      return parseStringify(admin);
+  }
+  else
+  {
+    throw new Error("Cette Utilisateur n'existe pas");
+  }
+}catch (error: any) {
+      throw new Error(error.message);
+  }
 }
 
 
@@ -180,3 +189,23 @@ export const updateUserProfile = async (data: {
 
   return await response.json();
 };
+
+
+
+
+
+export const  getEligibleUsersForElection= async (electionId: string): Promise<typeof Utilisateur[]> =>{
+  // Récupérer les informations de l'élection
+  const election = await Election.findById(electionId);
+  if (!election) {
+    throw new Error('Élection non trouvée');
+  }
+  if (election.typeElection === 'école') {
+    // Tous les utilisateurs activés sont éligibles
+    return parseStringify(await Utilisateur.find({ status: 'activé' }));
+  } else if (election.typeElection === 'classe' && election.classeFormation) {
+    // Seuls les utilisateurs de la même classe sont éligibles
+    return parseStringify(await Utilisateur.find({ status: 'activé', classe: election.classeFormation }));
+  }
+  return [];
+}

@@ -61,11 +61,11 @@ const AdminCandidatures = () => {
 
   const handleReject = async (id: string) => {
     const candidature = await getCandidat(id);
-    if (candidature.status === 'accepté') {
-    await rejectCandidature(id);
+    if (candidature.status === 'rejeté') {
     toast.success('Ce candidat vient d\'etre rejeté.');
     return;
     }
+    await rejectCandidature(id);
     window.location.reload();
   };
 

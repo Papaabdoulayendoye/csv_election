@@ -18,6 +18,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import Navbar from '@/components/Navbar';
+import ElectionCard from '@/components/ElectionCard';
+import Sidebar from '@/components/Sidebar';
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -35,7 +37,7 @@ const DashboardPage = () => {
       router.push('/sign-in');
     } else {
       const getCurrentUser = async () => {
-        const response = await getCurrentUserActions({currentUser});
+        const response = await getCurrentUserActions({ currentUser });
         setUser(response);
       };
       getCurrentUser();
@@ -91,68 +93,6 @@ const DashboardPage = () => {
 
   const sortedElections = sortElections(filteredElections);
 
-  const handleElectionClick = (id: string) => {
-    router.push(`/election/${id}`);
-  };
-
-  const handleApplyClick = (electionId: string) => {
-    console.log(`Postuler pour l'élection ${electionId}`);
-  };
-
-  const createElectionCard = (election: any) => {
-    return (
-      <div key={election._id} className="bg-gray-50 rounded-lg p-4 shadow transition duration-300 hover:shadow-md">
-        <h3 className="text-lg font-semibold text-primary">{election.titre}</h3>
-        <p className="text-gray-600 text-sm mt-2">{election.description}</p>
-        <div className="flex justify-between items-center mt-4">
-          <span className={`text-sm font-medium ${getStatusColor(election.status)}`}>
-            {capitalizeFirstLetter(election.status)}
-          </span>
-          <div className="flex gap-2">
-            <Button onClick={() => handleElectionClick(election._id)} className="bg-secondary text-white px-4 py-2 rounded text-sm hover:bg-primary transition duration-300">
-              Voir les candidats
-            </Button>
-            {election.status === "à venir" && (
-              <Button
-                onClick={() => handleApplyClick(election._id)}
-                className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition duration-300"
-              >
-                <Link className='' href={`/election/${election._id}/postuler`}>
-                  Postuler
-                </Link>
-              </Button>
-            )}
-          </div>
-        </div>
-        {election.status !== "terminée" && (
-          <p className="text-xs text-gray-500 mt-2">
-            {formatDateRange(election.dateDebut, election.dateFin)}
-          </p>
-        )}
-      </div>
-    );
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "en cours":
-        return "text-green-500";
-      case "à venir":
-        return "text-blue-500";
-      case "terminée":
-        return "text-red-500";
-      default:
-        return "";
-    }
-  };
-
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  const formatDateRange = (start: string, end: string) => {
-    return `${new Date(start).toLocaleString()} - ${new Date(end).toLocaleString()}`;
-  };
 
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);
@@ -169,14 +109,15 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <Navbar user={user!}/>
-
-      <main className="container mx-auto mt-8 px-4">
+    <div className="bg-gray-100 min-h-screen flex">
+      {/* <Sidebar /> */}
+      <div className='flex-1'>
+      <Navbar user={user!} />
+      <main className="container font-ibm-plex-serif mx-auto mt-8 px-4">
         <div className='mb-8'>
           <h1 className="text-3xl font-bold text-primary mb-2">Bienvenue, {user?.nom}</h1>
           <p className='text-14 truncate font-normal text-gray-700'>
-              {user?.email}
+            {user?.email}
           </p>
         </div>
 
@@ -188,39 +129,38 @@ const DashboardPage = () => {
             onChange={handleSearchChange}
             className="flex-1"
           />
-          
+
           <div className="mb-4 flex gap-4">
-          <Select
-            value={statusFilter}
-            onValueChange={handleStatusFilterChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Filtrer par statut" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Statut</SelectLabel>
-                <SelectItem value="all">Tout</SelectItem>
-                <SelectItem value="en cours">En cours</SelectItem>
-                <SelectItem value="à venir">À venir</SelectItem>
-                <SelectItem value="terminée">Terminée</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-
-
+            <Select
+              value={statusFilter}
+              onValueChange={handleStatusFilterChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Filtrer par statut" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Statut</SelectLabel>
+                  <SelectItem value="all">Tout</SelectItem>
+                  <SelectItem value="en cours">En cours</SelectItem>
+                  <SelectItem value="à venir">À venir</SelectItem>
+                  <SelectItem value="terminée">Terminée</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-4">
-          {sortedElections.map(createElectionCard)}
+          {/* {sortedElections.map(createElectionCard)} */}
+          {sortedElections.map(ElectionCard)}
         </div>
 
         <Pagination className='mb-4'>
           <PaginationContent>
             <PaginationItem>
               <Button disabled={currentPage === 1} className='text-white hover:bg-slate-800'>
-              <PaginationPrevious className="hover:bg-slate-800" href="#" onClick={() => handlePageChange(currentPage - 1)}   />
+                <PaginationPrevious className="hover:bg-slate-800" href="#" onClick={() => handlePageChange(currentPage - 1)} />
               </Button>
             </PaginationItem>
             {Array.from({ length: Math.ceil(elections.length / 10) }, (_, index) => (
@@ -236,12 +176,15 @@ const DashboardPage = () => {
             ))}
             <PaginationItem>
               <Button disabled={!isNext} className='text-white hover:bg-slate-800'>
-              <PaginationNext className='hover:bg-slate-800' href="#" onClick={() => handlePageChange(currentPage + 1)} />
+                <PaginationNext className='hover:bg-slate-800' href="#" onClick={() => handlePageChange(currentPage + 1)} />
               </Button>
             </PaginationItem>
           </PaginationContent>
         </Pagination>
       </main>
+      
+      </div>
+
     </div>
   );
 };

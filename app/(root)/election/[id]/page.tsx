@@ -10,7 +10,6 @@ import { getCurrentUserActions } from '@/lib/actions/user.actions';
 import { toast } from 'react-toastify';
 import { ElectionProps } from '@/types';
 
-// Enregistrer les composants de graphique
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const Modal = ({ children }: PropsWithChildren) => {
@@ -34,20 +33,21 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
   const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
   
   const colors = [
-    'rgba(255, 99, 132, 0.8)',
-    'rgba(54, 162, 235, 0.8)',
-    'rgba(255, 206, 86, 0.8)',
-    'rgba(75, 192, 192, 0.8)',
-    'rgba(153, 102, 255, 0.8)',
+    '#0c2146',
     'rgba(255, 159, 64, 0.8)',
+    'rgba(54, 153, 255, 0.8)',
+    'rgba(153, 102, 255, 0.8)',
+    'rgba(255, 206, 86, 0.8)',
+    'rgba(179, 204, 255, 0.8)',
+    'rgba(54, 162, 235, 0.8)',
+    'rgba(75, 192, 192, 0.8)',
+    'rgba(255, 99, 132, 0.8)',
     'rgba(199, 199, 199, 0.8)',
     'rgba(83, 102, 136, 0.8)',
     'rgba(251, 120, 94, 0.8)',
-    'rgba(179, 204, 255, 0.8)',
     'rgba(255, 183, 77, 0.8)',
     'rgba(134, 207, 192, 0.8)',
     'rgba(255, 101, 101, 0.8)',
-    'rgba(54, 153, 255, 0.8)',
     'rgba(140, 140, 140, 0.8)'
   ];
 

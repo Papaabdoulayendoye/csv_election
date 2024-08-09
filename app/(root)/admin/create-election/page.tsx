@@ -111,7 +111,7 @@ try {
                   <FormControl>
                     <Input type="text" placeholder="Entrez le titre de l'élection" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500'/>
                 </FormItem>
               )}
             />
@@ -129,7 +129,7 @@ try {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500'/>
                 </FormItem>
               )}
             />
@@ -149,7 +149,7 @@ try {
                       <option value="école">École</option>
                     </select>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='text-red-500'/>
                 </FormItem>
               )}
             />
@@ -180,7 +180,7 @@ try {
                         <option value="L3 IM">L3 IM</option>
                       </select>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className='text-red-500'/>
                   </FormItem>
                 )}
               />
@@ -196,7 +196,7 @@ try {
                       <FormControl>
                         <Input type="text" placeholder="Sélectionnez la date de début" id="start-date" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className='text-red-500'/>
                     </FormItem>
                   )}
                 />
@@ -211,7 +211,7 @@ try {
                       <FormControl>
                         <Input type="text" placeholder="Sélectionnez la date de fin" id="end-date" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className='text-red-500'/>
                     </FormItem>
                   )}
                 />

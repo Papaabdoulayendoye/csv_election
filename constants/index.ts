@@ -1,33 +1,29 @@
 export const sidebarLinks = [
   {
     imgURL: "assets/icons/home.svg",
-    route: "/",
-    label: "Accueil",
+    route: "/dashboard",
+    label: "Dashboard",
   },
   {
     imgURL: "assets/icons/election.svg",
-    route: "/elections",
-    label: "Élections",
+    route: "/admin/gestion-election",
+    label: "Gestion des Élection",
   },
+  // {
+  //   imgURL: "assets/icons/election.svg",
+  //   route: "/admin/create-election",
+  //   label: "Creer une Élection",
+  // },
   {
     imgURL: "assets/icons/candidates.svg",
-    route: "/candidatures",
-    label: "Candidatures",
+    route: "/admin/gestion-candidat",
+    label: "Gestion des Candidats",
   },
-  {
-    imgURL: "assets/icons/vote.svg",
-    route: "/votes",
-    label: "Votes",
-  },
-  {
-    imgURL: "assets/icons/results.svg",
-    route: "/resultats",
-    label: "Résultats",
-  },
+  
   {
     imgURL: "assets/icons/users.svg",
-    route: "/utilisateurs",
-    label: "Utilisateurs",
+    route: "/admin/gestion-utilisateur",
+    label: "Gestion des Utilisateurs",
   },
   {
     imgURL: "assets/icons/settings.svg",
