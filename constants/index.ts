@@ -9,24 +9,19 @@ export const sidebarLinks = [
     route: "/admin/gestion-election",
     label: "Gestion des Élection",
   },
-  // {
-  //   imgURL: "assets/icons/election.svg",
-  //   route: "/admin/create-election",
-  //   label: "Creer une Élection",
-  // },
   {
-    imgURL: "assets/icons/candidates.svg",
+    imgURL: "assets/icons/political.svg",
     route: "/admin/gestion-candidat",
     label: "Gestion des Candidats",
   },
   
   {
-    imgURL: "assets/icons/users.svg",
+    imgURL: "assets/icons/user.svg",
     route: "/admin/gestion-utilisateur",
     label: "Gestion des Utilisateurs",
   },
   {
-    imgURL: "assets/icons/settings.svg",
+    imgURL: "assets/icons/setting.svg",
     route: "/parametres",
     label: "Paramètres",
   },

@@ -67,6 +67,7 @@ const config = {
         "ibm-plex-serif": "var(--font-ibm-plex-serif)"
       },
       backgroundImage: {
+        "bank-gradient": "linear-gradient(90deg, #0179FE 0%, #4893FF 100%)",
         appointments: "url('/assets/images/appointments-bg.png')",
         pending: "url('/assets/images/pending-bg.png')",
         cancelled: "url('/assets/images/cancelled-bg.png')",
