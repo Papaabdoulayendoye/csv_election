@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -107,7 +107,6 @@ const Admin = () => {
                     </div>
                   </td>
                 </tr>
-                {/* D'autres lignes d'élections seraient ajoutées dynamiquement ici */}
               </tbody>
             </table>
           </div>
@@ -154,46 +153,10 @@ const Admin = () => {
                     </div>
                   </td>
                 </tr>
-                {/* D'autres lignes d'utilisateurs seraient ajoutées dynamiquement ici */}
               </tbody>
             </table>
           </div>
         </section>
-
-        {/* <section className="mb-12">
-          <h2 className="text-2xl font-bold text-primary mb-4">Rapports</h2>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-2">Statistiques Générales</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h4 className="text-lg font-bold mb-2">Répartition des Votes</h4>
-                <Pie
-                  data={{
-                    labels: ['Candidat A', 'Candidat B', 'Candidat C'],
-                    datasets: [{
-                      data: [300, 50, 100],
-                      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                      hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-                    }]
-                  }}
-                />
-              </div>
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h4 className="text-lg font-bold mb-2">Activité des Utilisateurs</h4>
-                <Pie
-                  data={{
-                    labels: ['Actif', 'Inactif', 'En Attente'],
-                    datasets: [{
-                      data: [200, 150, 50],
-                      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                      hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-                    }]
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </section> */}
       </main>
     </div>
   );
