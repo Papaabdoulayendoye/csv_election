@@ -15,6 +15,7 @@ import { PostulerValidation } from '@/lib/validations/candidature';
 import { createCandidature } from '@/lib/actions/candidats.actions'; // Adjust the import as needed
 import { getCurrentUserActions,getEligibleUsersForElection } from '@/lib/actions/user.actions';
 import { toast } from 'react-toastify';
+import { getElectionById } from '@/lib/actions/election.actions';
 
 const Postuler = ({ params }: { params: { id: string } }) => {
     const electionId = params.id;
@@ -23,6 +24,7 @@ const Postuler = ({ params }: { params: { id: string } }) => {
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const [user, setUser] = useState<{ _id: string } | null>(null);
+    const [election, setElection] = useState<{ _id: string,titre:string } | null>(null);
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(PostulerValidation),
@@ -45,7 +47,12 @@ const Postuler = ({ params }: { params: { id: string } }) => {
                 const response = await getCurrentUserActions({ currentUser });
                 setUser(response);
             };
+            const currentELection = async () => {
+                const response = await getElectionById(electionId)
+                setElection(response)
+            }
             getUser();
+            currentELection();
         }
     }, [router]);
 
@@ -80,9 +87,12 @@ const Postuler = ({ params }: { params: { id: string } }) => {
                 throw new Error("Utilisateur non connecté.");
             }
             const eligibleUsers = await getEligibleUsersForElection(electionId);
-            const isEligible = eligibleUsers.some(eligibleUser => eligibleUser._id.toString() === user._id.toString());
+            const isEligible = eligibleUsers.some((eligibleUser: any) => eligibleUser._id.toString() === user._id.toString());
             if (!isEligible) {
                 toast.error("Vous n'êtes pas éligible pour cette élection.");
+                setTimeout(() => {
+                    router.push('/dashboard');
+                }, 3000);
                 throw new Error("Vous n'êtes pas éligible pour cette élection.");
             }
             await createCandidature({
@@ -112,7 +122,7 @@ const Postuler = ({ params }: { params: { id: string } }) => {
             <h1 className="text-3xl font-bold text-blue-700 mb-8 text-center">Application de Candidat</h1>
 
             <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-                <h2 className="text-2xl font-semibold text-blue-600 mb-4">Election ID {electionId}</h2>
+                <h2 className="text-2xl font-semibold text-blue-600 mb-4">{election?.titre}</h2>
             </div>
 
             <Form {...form}>

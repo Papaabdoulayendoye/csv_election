@@ -150,7 +150,7 @@ export const handleVoteActions = async ({ candidateId, electionId, candidateName
     const eligibleUsers = await getEligibleUsersForElection(electionId);
 
     // Check if the current user is eligible to vote
-    const isEligible = eligibleUsers.some((user: typeof Utilisateur) => user._id.toString() === userId);
+    const isEligible = eligibleUsers.some((user: any) => user._id.toString() === userId);
     if (!isEligible) {
       return { message: 'Vous n\'êtes pas éligible pour voter dans cette élection', type: 'error' };
     }
@@ -214,7 +214,7 @@ export const getCandidatesForElection = async (electionId: string) => {
       };
     });
 
-    return candidatesWithVotes;
+    return parseStringify(candidatesWithVotes);
   } catch (error) {
     console.error('Erreur lors de la récupération des candidats pour l\'élection:', error);
     return [];

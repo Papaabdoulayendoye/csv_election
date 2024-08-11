@@ -28,6 +28,7 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
   const [getElection, setGetElection] = useState<ElectionProps>();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
+  const [isVotingDisabled, setIsVotingDisabled] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [rankingData, setRankingData] = useState<any>({ labels: [], datasets: [] });
   const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
@@ -50,17 +51,30 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
     'rgba(255, 101, 101, 0.8)',
     'rgba(140, 140, 140, 0.8)'
   ];
+    const getElectionStatus = (dateDebut:any, dateFin:any) => {
+    const now = new Date();
+    const startDate = new Date(dateDebut);
+    const endDate = new Date(dateFin);
 
+    if (now < startDate) {
+      return 'à venir';
+    } else if (now > endDate) {
+      return 'terminée';
+    } else {
+      return 'en cours';
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       const approvedCandidates = await getCandidatesForElection(electionId);
       const currentElection = await getElectionById(electionId);
       setGetElection(currentElection);
-      
+      const status = getElectionStatus(currentElection.dateDebut, currentElection.dateFin); 
+      setIsVotingDisabled(status !== 'en cours');
       const labels = approvedCandidates.map((c: any) => c.fullName);
       const data = approvedCandidates.map((c: any) => c.votes);
-      const backgroundColors = data.map((_, index) => colors[index % colors.length]);
-      const borderColors = backgroundColors.map(color => color.replace('0.8', '1'));
+      const backgroundColors = data.map((_:any, index:any) => colors[index % colors.length]);
+      const borderColors = backgroundColors.map((color:any) => color.replace('0.8', '1'));
       setCandidates(approvedCandidates);
       setRankingData({
         labels,
@@ -73,10 +87,9 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
         }]
       });
     };
-
-    fetchData();
+  fetchData();
+    
   }, [electionId]);
-
   const handleVote = async ({ candidateId, candidateName }: { candidateId: string, candidateName: string }) => {
     const userId = localStorage.getItem("currentUser");
     if (!userId) {
@@ -148,7 +161,7 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
                     <div className="p-4 text-center">
                       <h3 className="text-xl font-semibold text-primary">{candidate.fullName}</h3>
                       <p className="text-gray-600 text-sm mt-2">{candidate.bio}</p>
-                      <Button onClick={() => handleVote({ candidateId: candidate._id, candidateName: candidate.fullName })} className="mt-4 w-full bg-secondary text-white px-4 py-2 rounded text-sm hover:bg-primary transition duration-300">
+                      <Button disabled={isVotingDisabled} onClick={() => handleVote({ candidateId: candidate._id, candidateName: candidate.fullName })} className="mt-4 w-full bg-secondary text-white px-4 py-2 rounded text-sm hover:bg-primary transition duration-300">
                         Voter
                       </Button>
                     </div>

@@ -6,7 +6,7 @@ const electionSchema = new Schema({
   dateFin: { type: Date, required: true },
   description: { type: String, required: true },
   typeElection: { type: String, enum: ['classe', 'école', 'club'], required: true },
-  classeFormation: {type:String,required:true},
+  classeFormation: {type:String,required:false},
   candidats: [
     {
       type: Schema.Types.ObjectId,
