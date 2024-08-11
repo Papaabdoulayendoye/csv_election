@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
 import { getAllCandidatures, approveCandidature, rejectCandidature, getCandidat } from '@/lib/actions/candidats.actions';
 import { usePathname, useRouter } from 'next/navigation';
-import 'tailwindcss/tailwind.css';
 import {
   Table,
   TableBody,
