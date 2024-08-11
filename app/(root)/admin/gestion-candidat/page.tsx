@@ -70,10 +70,6 @@ const AdminCandidatures = () => {
     window.location.reload();
   };
 
-  const loggout = () => {
-    localStorage.clear();
-  };
-
   const getBgStatusColor = (status: string) => {
     switch (status) {
       case "en attente":
