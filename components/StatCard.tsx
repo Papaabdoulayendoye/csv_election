@@ -9,24 +9,6 @@ type StatCardProps = {
   icon: string;
   icons?: true | false;
 };
-{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-bold text-white">Total Candidatures</h2>
-        <p className="text-2xl text-gray-400">{totalCandidatures}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-bold text-white">En Attente</h2>
-        <p className="text-2xl text-gray-400">{pendingCandidatures}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-bold text-white">Approuvées</h2>
-        <p className="text-2xl text-gray-400">{acceptedCandidatures}</p>
-        </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-        <h2 className="text-lg font-bold text-white">Rejetées</h2>
-        <p className="text-2xl text-gray-400">{rejectedCandidatures}</p>
-        </div>
-    </div> */}
 export const StatCard = ({ count = 0, label, icon, type,icons }: StatCardProps) => {
   return (
     <div

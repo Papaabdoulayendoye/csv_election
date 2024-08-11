@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu } from 'lucide-react';
@@ -34,8 +33,6 @@ const Sidebar = ({isCollapsed,toggleSidebar,user}:{isCollapsed:boolean,toggleSid
                       src={item.imgURL} 
                       alt={item.label} 
                       fill
-                      // width={24}
-                      // height={24}
                       className={cn({'brightness-[3] invert-0': isActive})} 
                     />
                   </div>

@@ -27,7 +27,7 @@ const AdminCandidatures = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserProps>();
   const router = useRouter();
-  const pathName = usePathname()
+  const pathName = usePathname();
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
     if (currentUser !== 'admin.evote@gmail.com') {
@@ -70,24 +70,6 @@ const AdminCandidatures = () => {
     window.location.reload();
   };
 
-  const getBgStatusColor = (status: string) => {
-    switch (status) {
-      case "en attente":
-        return "bg-blue-600";
-      case "accepté":
-        return "bg-green-600";
-      case "rejeté":
-        return "bg-red-600";
-      default:
-        return "bg-gray-600";
-    }
-  };
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
   if (loading) {
     return <p className="text-white">Chargement...</p>;
   }
@@ -122,16 +104,12 @@ const AdminCandidatures = () => {
                       src={item.imgURL} 
                       alt={item.label} 
                       fill
-                      // width={24}
-                      // height={24}
                       className={cn({'brightness-[3] invert-0': isActive})} 
                     />
                   </div>
-                  {!isCollapsed && (
                     <p className={cn('text-16 font-semibold text-black-2 max-xl:hidden', {'!text-white': isActive})}>
                       {item.label}
                     </p>
-                  )}
                 </Link>
               </li>
             );
