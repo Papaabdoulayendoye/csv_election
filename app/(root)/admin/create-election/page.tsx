@@ -23,7 +23,6 @@ import { toast } from 'react-toastify';
 
 
 export default function CreateElection() {
-  const currentUser = localStorage.getItem('currentUser');
   const router = useRouter();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const form = useForm({
@@ -78,10 +77,11 @@ try {
       },
     });
   };
-  if (currentUser !== 'admin.evote@gmail.com') {
-    router.push('/dashboard');
-  }
   useEffect(() => {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser !== 'admin.evote@gmail.com') {
+      router.push('/dashboard');
+    }
     initializeDatePickers();
   }, []);
 
