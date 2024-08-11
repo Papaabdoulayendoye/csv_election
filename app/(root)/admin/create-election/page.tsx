@@ -22,7 +22,6 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 export default function CreateElection() {
-
   const router = useRouter();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const form = useForm({
@@ -42,9 +41,6 @@ export default function CreateElection() {
   const onSubmit = async (values: z.infer<typeof ElectionValidation>) => {
     // Envoi des données au serveur ou sauvegarde locale
     setSubmitting(true);
-    console.log('====================================');
-    console.log(values);
-    console.log('====================================');
 try {
     const response = await createElection(values);
     if (response.type === 'success') {
