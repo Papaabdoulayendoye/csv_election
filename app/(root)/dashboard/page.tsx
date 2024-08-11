@@ -107,7 +107,7 @@ const DashboardPage = () => {
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
-    const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -117,7 +117,7 @@ const DashboardPage = () => {
       {user?.email === 'admin.evote@gmail.com' && 
       <Sidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} user={user}/>
       }
-      <div className={`flex-1 ${isCollapsed ? 'ml-20' : 'ml-64'} transition-margin duration-300`}>
+      <div className={`flex-1 ${user?.email === 'admin.evote@gmail.com' ? (isCollapsed ? 'ml-20' : 'ml-64') + ' transition-margin duration-300' : ''}`}>
       <Navbar user={user!} />
       <main className="container font-ibm-plex-serif mx-auto mt-8 px-4">
         <div className='mb-8'>
@@ -188,10 +188,8 @@ const DashboardPage = () => {
           </PaginationContent>
         </Pagination>
       </main>
-      
       </div>
-
-    </div>
+      </div>
   );
 };
 

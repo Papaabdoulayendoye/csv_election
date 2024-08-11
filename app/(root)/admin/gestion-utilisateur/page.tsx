@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { StatCard } from '@/components/StatCard';
 import { cn } from '@/lib/utils';
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UserProps } from '@/types';
 import { activateUser, deactivateUser, getAllUsers } from '@/lib/actions/user.actions';
 import {
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/pagination";
 import clsx from 'clsx';
 import { Button } from '@/components/ui/button';
+import { sidebarLinks } from '@/constants';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<UserProps[]>([]);
@@ -39,7 +40,7 @@ const AdminUsers = () => {
 
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
-    if (!currentUser) {
+    if (currentUser !== 'admin.evote@gmail.com') {
       router.push('/sign-in');
     } else {
       const fetchUsers = async () => {
@@ -61,7 +62,12 @@ const AdminUsers = () => {
     await deactivateUser(id);
     window.location.reload();
   };
+  const pathName = usePathname()
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   if (loading) {
     return <p className="text-white">Chargement...</p>;
   }
@@ -81,9 +87,6 @@ const AdminUsers = () => {
   const pendingUsers = users.filter(u => u.status === 'en attente').length;
   const inactiveUsers = users.filter(u => u.status === 'desactivé').length;
   const totalPages = Math.ceil(totalUsers / itemsPerPage);
-  console.log('====================================');
-  console.log("users",users);
-  console.log('====================================');
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -101,7 +104,32 @@ const AdminUsers = () => {
               <span className="font-bold text-xl">E-Vote Admin</span>
             </div>
           </Link>
-          <p className="text-16-semibold">Admin Dashboard</p>
+          <div className='flex items-center justify-center gap-2'>
+          {sidebarLinks.map((item) => {
+            const isActive = pathName === item.route || pathName.startsWith(`/${item.route}`);
+            return (
+              <li key={item.label} className=' list-none'>
+                <Link href={item.route} className={cn('flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start', {'bg-bank-gradient': isActive})}>
+                  <div className="relative size-6">
+                    <Image 
+                      src={item.imgURL} 
+                      alt={item.label} 
+                      fill
+                      // width={24}
+                      // height={24}
+                      className={cn({'brightness-[3] invert-0': isActive})} 
+                    />
+                  </div>
+                  {!isCollapsed && (
+                    <p className={cn('text-16 font-semibold text-black-2 max-xl:hidden', {'!text-white': isActive})}>
+                      {item.label}
+                    </p>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </div>
         </header>
         <main className="admin-main">
           <section className="w-full space-y-4">

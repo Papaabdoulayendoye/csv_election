@@ -22,7 +22,7 @@ import { Loader2 } from 'lucide-react';
 import { UserProps } from '@/types';
 
 const UserProfileValidation = z.object({
-  fullName: z.string().nonempty("Le nom complet est requis"),
+  nom: z.string().nonempty("Le nom complet est requis"),
   email: z.string().email("Adresse courriel invalide").nonempty("L'adresse courriel est requise"),
   phoneNumber: z.string().nonempty("Le numéro de téléphone est requis"),
   bio: z.string().optional(),
@@ -36,7 +36,7 @@ const UserProfile: React.FC = () => {
   const form = useForm({
     resolver: zodResolver(UserProfileValidation),
     defaultValues: {
-      fullName: '',
+      nom: '',
       email: '',
       phoneNumber: '',
       bio: '',
@@ -52,7 +52,7 @@ const UserProfile: React.FC = () => {
         const response = await getCurrentUserActions({ currentUser });
         setUser(response);
         form.reset({
-          fullName: response.fullName,
+          nom: response.nom,
           email: response.email,
           phoneNumber: response.phoneNumber,
           bio: response.bio,
@@ -102,7 +102,7 @@ const UserProfile: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
             <FormField
               control={form.control}
-              name="fullName"
+              name="nom"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nom complet</FormLabel>
@@ -133,7 +133,7 @@ const UserProfile: React.FC = () => {
                 <FormItem>
                   <FormLabel>Numéro de téléphone</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <Input type="text" {...field}  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

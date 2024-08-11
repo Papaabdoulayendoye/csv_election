@@ -13,9 +13,9 @@ const Sidebar = ({isCollapsed,toggleSidebar,user}:{isCollapsed:boolean,toggleSid
   const pathName = usePathname()
   return (
     <div className={`bg-gray-800 text-white p-4 flex flex-col min-h-screen fixed top-0 left-0 ${isCollapsed ? 'w-20' : 'w-68'} transition-width duration-300`}>
-      <div className="flex items-center justify-between p-4 font-bold text-2xl">
+      <div className="flex items-center text-white justify-between p-4 font-bold text-2xl">
           <Link href="/" className='mb-12 cursor-pointer flex items-center gap-2'>
-          <Image src={'/assets/icons/logo.svg'} width={24} height={24} alt='logo'/>
+          <Image src={'/assets/icons/logo.svg'} className='rounded-[25px] bg-white' width={24} height={24} alt='logo'/>
           {!isCollapsed && <h1>E-Vote Admin</h1>}
           </Link>
         <button onClick={toggleSidebar} className="mb-12 text-white focus:outline-none">

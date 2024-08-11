@@ -2,7 +2,7 @@
 import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
 import { getAllCandidatures, approveCandidature, rejectCandidature, getCandidat } from '@/lib/actions/candidats.actions';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import 'tailwindcss/tailwind.css';
 import {
   Table,
@@ -20,16 +20,17 @@ import { getCurrentUserActions } from '@/lib/actions/user.actions';
 import { cn } from '@/lib/utils';
 import { StatCard } from '@/components/StatCard';
 import clsx from 'clsx';
+import { sidebarLinks } from '@/constants';
 
 const AdminCandidatures = () => {
   const [candidatures, setCandidatures] = useState<CandidatureProps3[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserProps>();
   const router = useRouter();
-
+  const pathName = usePathname()
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
-    if (!currentUser) {
+    if (currentUser !== 'admin.evote@gmail.com') {
       router.push('/sign-in');
     } else {
       const getCurrentUser = async () => {
@@ -85,7 +86,11 @@ const AdminCandidatures = () => {
         return "bg-gray-600";
     }
   };
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   if (loading) {
     return <p className="text-white">Chargement...</p>;
@@ -101,16 +106,41 @@ const AdminCandidatures = () => {
     "min-h-screen bg-dark-300 font-sans antialiased flex-col space-y-14"
     )}>
       <header className="admin-header">
-    <Link href="/" className="cursor-pointer">
-        <div className="flex items-center">
-        <svg className="h-8 w-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-        <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="font-bold text-xl">E-Vote Admin</span>
-    </div>
-    </Link>
-    <p className="text-16-semibold">Admin Dashboard</p>
+        <Link href="/" className="cursor-pointer">
+            <div className="flex items-center">
+            <svg className="h-8 w-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+            <path d="M7 13l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="font-bold text-xl">E-Vote Admin</span>
+        </div>
+        </Link>
+        <div className='flex items-center justify-center gap-2'>
+          {sidebarLinks.map((item) => {
+            const isActive = pathName === item.route || pathName.startsWith(`/${item.route}`);
+            return (
+              <li key={item.label} className=' list-none'>
+                <Link href={item.route} className={cn('flex gap-3 items-center py-1 md:p-3 2xl:p-4 rounded-lg justify-center xl:justify-start', {'bg-bank-gradient': isActive})}>
+                  <div className="relative size-6">
+                    <Image 
+                      src={item.imgURL} 
+                      alt={item.label} 
+                      fill
+                      // width={24}
+                      // height={24}
+                      className={cn({'brightness-[3] invert-0': isActive})} 
+                    />
+                  </div>
+                  {!isCollapsed && (
+                    <p className={cn('text-16 font-semibold text-black-2 max-xl:hidden', {'!text-white': isActive})}>
+                      {item.label}
+                    </p>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </div>
     </header>
       <main className="admin-main">
         <section className="w-full space-y-4">

@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 export default function CreateElection() {
+
   const router = useRouter();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const form = useForm({
@@ -80,6 +81,10 @@ try {
     });
   };
 
+  const currentUser = localStorage.getItem('currentUser');
+  if (currentUser !== 'admin.evote@gmail.com') {
+    router.push('/dashboard');
+  }
   useEffect(() => {
     initializeDatePickers();
   }, []);

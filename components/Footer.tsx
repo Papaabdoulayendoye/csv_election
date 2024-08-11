@@ -28,7 +28,7 @@ return (
     )}
     {!isCollapsed && (
     <div className='footer_image' onClick={handleLogOut}>
-        <Image src='assets/icons/logout.svg' fill alt='logout logo' />
+        <Image src='/assets/icons/logout.svg' fill alt='logout logo' />
     </div>
     )}
     </footer>
