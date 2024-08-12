@@ -11,9 +11,6 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async ({to, subject, html}:{to:string, subject:string, html:string}) => {
-    console.log('====================================');
-    console.log("GMAIL",process.env.USER_MAIL!);
-    console.log('====================================');
   const mailOptions = {
     from: process.env.USER_MAIL!,
     to,
@@ -50,3 +47,55 @@ export const sendEmails = async (users: any[], subject: string, html: string) =>
     }
   }
 }
+
+const sendAccountCreationAlert = async (userName:string, userEmail:string) => {
+  const html = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqCARPNAbZnvG5C2AZnA7mLWrR8rO2_30Q&s" alt="Logo de notre application" style="width: 100px; height: auto;">
+      </div>
+      <h1 style="text-align: center; color: #FF5733;">Nouvel utilisateur inscrit</h1>
+      <p>Bonjour Admin,</p>
+      <p>L'utilisateur <strong>${userName}</strong> vient de créer un compte sur notre application.</p>
+      <p>Voici les informations de l'utilisateur :</p>
+      <ul>
+        <li>Nom : ${userName}</li>
+        <li>Email : ${userEmail}</li>
+      </ul>
+      <p>Veuillez vérifier et approuver le compte si tout est en ordre.</p>
+      <div style="text-align: center; margin-top: 20px;">
+        <a href="https://csv-election.vercel.app/admin/gestion-utilisateur" style="background-color: #FF5733; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Gérer les utilisateurs</a>
+      </div>
+    </div>
+  `;
+
+  await sendEmail({
+    to: "admin.evote@gmail.com",
+    subject: "Nouvel utilisateur inscrit",
+    html: html,
+  });
+};
+
+
+const sendNewApplicationAlert = async (candidateName:string, electionTitle:string) => {
+  const html = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeqCARPNAbZnvG5C2AZnA7mLWrR8rO2_30Q&s" alt="Logo de notre application" style="width: 100px; height: auto;">
+      </div>
+      <h1 style="text-align: center; color: #FF5733;">Nouvelle candidature reçue</h1>
+      <p>Bonjour Admin,</p>
+      <p>L'utilisateur <strong>${candidateName}</strong> vient de postuler pour l'élection <strong>${electionTitle}</strong>.</p>
+      <p>Veuillez examiner la candidature et prendre les mesures nécessaires.</p>
+      <div style="text-align: center; margin-top: 20px;">
+        <a href="https://csv-election.vercel.app/admin/gestion-candidat" style="background-color: #FF5733; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Gérer les candidatures</a>
+      </div>
+    </div>
+  `;
+
+  await sendEmail({
+    to: "admin.evote@gmail.com",
+    subject: "Nouvelle candidature reçue",
+    html: html,
+  });
+};

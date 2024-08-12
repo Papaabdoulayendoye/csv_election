@@ -39,7 +39,7 @@ export async function activateUser({id,email}: {id:string,email:string}) {
   <p>Nous sommes heureux de vous informer que votre compte sur notre application a été activé par notre administrateur.</p>
   <p>Vous pouvez maintenant vous connecter et commencer à utiliser nos services :</p>
   <ul>
-    <li><a href="https://www.votre-site.com/login">Se connecter</a></li>
+    <li><a href="https://csv-election.vercel.app/sign-in">Se connecter</a></li>
   </ul>
   <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment.</p>
   <p>Bonne journée,</p>
@@ -108,15 +108,15 @@ const html = `
 <p>Votre compte est actuellement en attente d'activation. Il sera actif dès que l'administrateur aura validé votre inscription.</p>
 <p>Voici quelques ressources pour vous aider à démarrer :</p>
 <ul>
-<li><a href="https://www.votre-site.com/guide-de-demarrage">Guide de démarrage</a></li>
-<li><a href="https://www.votre-site.com/faq">FAQ</a></li>
-<li><a href="https://www.votre-site.com/support">Support</a></li>
+<li><a href="https://csv-election.vercel.app/#how-it-works">Guide de démarrage</a></li>
+<li><a href="https://csv-election.vercel.app/#features">FAQ</a></li>
+<li><a href="https://csv-election.vercel.app/#how-it-works">Support</a></li>
 </ul>
 <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à tout moment.</p>
 <p>Bonne journée,</p>
 <p>L'équipe de notre application</p>
 <div style="text-align: center; margin-top: 20px;">
-<a href="https://www.votre-site.com" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Visitez notre site</a>
+<a href="https://csv-election.vercel.app/" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Visitez notre site</a>
 </div>
 </div>
 `;

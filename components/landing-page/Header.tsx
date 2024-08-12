@@ -1,5 +1,5 @@
-"use client";
-import { useState } from 'react';
+"use client"
+import React, { useState } from 'react';
 
 const Header = () => {
   const [menuOuvert, setMenuOuvert] = useState(false);
@@ -14,16 +14,28 @@ const Header = () => {
           </svg>
           <span className="font-bold text-xl">E-Vote</span>
         </div>
-        <div className={`hidden md:flex items-center space-x-6 ${menuOuvert ? 'block' : 'hidden'}`}>
+        {/* Menu for desktop */}
+        <div className="hidden md:flex items-center space-x-6">
           <a href="#about" className="hover:text-secondary transition-colors">À propos</a>
           <a href="#features" className="hover:text-secondary transition-colors">Fonctionnalités</a>
           <a href="#how-it-works" className="hover:text-secondary transition-colors">Comment ça marche</a>
           <a href="#contact" className="hover:text-secondary transition-colors">Contact</a>
         </div>
-        <button className="md:hidden focus:outline-none" onClick={() => setMenuOuvert(!menuOuvert)}>
+        {/* Menu for mobile */}
+        <button
+          className="md:hidden focus:outline-none"
+          onClick={() => setMenuOuvert((prev) => !prev)}
+        >
           <i className="fas fa-bars"></i>
         </button>
       </nav>
+      {/* Mobile menu */}
+      <div className={`md:hidden ${menuOuvert ? 'block' : 'hidden'} bg-white shadow-md transition duration-300`}>
+        <a href="#about" className="block py-2 px-6 hover:text-secondary transition-colors">À propos</a>
+        <a href="#features" className="block py-2 px-6 hover:text-secondary transition-colors">Fonctionnalités</a>
+        <a href="#how-it-works" className="block py-2 px-6 hover:text-secondary transition-colors">Comment ça marche</a>
+        <a href="#contact" className="block py-2 px-6 hover:text-secondary transition-colors">Contact</a>
+      </div>
     </header>
   );
 };
