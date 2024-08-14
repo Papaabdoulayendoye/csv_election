@@ -11,7 +11,7 @@ import { UserProps } from '@/types';
 const Sidebar = ({isCollapsed,toggleSidebar,user}:{isCollapsed:boolean,toggleSidebar:()=> void,user:UserProps}) => {
   const pathName = usePathname()
   return (
-    <div className={`bg-gray-800 text-white p-4 flex flex-col min-h-screen fixed top-0 left-0 ${isCollapsed ? 'w-20' : 'w-68'} transition-width duration-300`}>
+    <div className={`bg-gray-800 text-white p-4 flex flex-col min-h-screen fixed top-0 left-0 ${isCollapsed ? 'w-20' : 'w-68'} transition-width duration-300 md:block lg:block xl:block 2xl:block hidden sm:hidden xs:hidden`}>
       <div className="flex items-center text-white justify-between p-4 font-bold text-2xl">
           <Link href="/" className='mb-12 cursor-pointer flex items-center gap-2'>
           <Image src={'/assets/icons/logo.svg'} className='rounded-[25px] bg-white' width={24} height={24} alt='logo'/>
