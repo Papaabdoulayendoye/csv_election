@@ -168,26 +168,38 @@ if (user) {
 // Dans lib/actions/user.actions.ts
 
 export const updateUserProfile = async (data: {
-  fullName: string;
+  nom: string;
   email: string;
-  phoneNumber: string;
-  bio: string;
+  telephone: string;
+  bio?: string;
 }) => {
-  // Logique pour mettre à jour le profil utilisateur dans la base de données
-  // Exemple:
-  const response = await fetch('/api/update-profile', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    // Find the user by email and update their profile
+    console.log('====================================');
+    console.log(data);
+    console.log(data.telephone);
+    console.log('====================================');
+    const updatedUser = await Utilisateur.findOneAndUpdate(
+      { email: data.email }, // Find the user by email
+      {
+        $set: {
+          nom: data.nom,
+          telephone: data.telephone,
+          bio: data.bio,
+        },
+      },
+      { new: true, runValidators: true } // Return the updated document and run validation
+    );
 
-  if (!response.ok) {
-    throw new Error('Erreur lors de la mise à jour du profil');
+    if (!updatedUser) {
+      throw new Error("User not found or couldn't be updated.");
+    }
+
+    return parseStringify(updatedUser); // Return the updated user
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw new Error("Error updating user profile.");
   }
-
-  return await response.json();
 };
 
 

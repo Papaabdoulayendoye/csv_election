@@ -20,11 +20,12 @@ import * as z from 'zod';
 import { getCurrentUserActions, updateUserProfile } from '@/lib/actions/user.actions'; // Ajoutez cette ligne
 import { Loader2 } from 'lucide-react';
 import { UserProps } from '@/types';
+import { toast } from 'react-toastify';
 
 const UserProfileValidation = z.object({
   nom: z.string().nonempty("Le nom complet est requis"),
   email: z.string().email("Adresse courriel invalide").nonempty("L'adresse courriel est requise"),
-  phoneNumber: z.string().nonempty("Le numéro de téléphone est requis"),
+  telephone: z.string().nonempty("Le numéro de téléphone est requis"),
   bio: z.string().optional(),
 });
 
@@ -38,7 +39,7 @@ const UserProfile: React.FC = () => {
     defaultValues: {
       nom: '',
       email: '',
-      phoneNumber: '',
+      telephone: '',
       bio: '',
     },
   });
@@ -54,7 +55,7 @@ const UserProfile: React.FC = () => {
         form.reset({
           nom: response.nom,
           email: response.email,
-          phoneNumber: response.phoneNumber,
+          telephone: response.telephone,
           bio: response.bio,
         });
       };
@@ -66,11 +67,12 @@ const UserProfile: React.FC = () => {
     setSubmitting(true);
     try {
       // Logique pour mettre à jour le profil utilisateur
-    //   await updateUserProfile(values); // Ajoutez cette ligne pour mettre à jour le profil
-    console.log("Values",values);
-    
+      await updateUserProfile(values); // Ajoutez cette ligne pour mettre à jour le profil
       setSubmitting(false);
-      alert("Profil mis à jour avec succès");
+      toast.success("Profil mis à jour avec succès");
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000);
     } catch (error) {
       setSubmitting(false);
       if (error instanceof Error) {
@@ -128,12 +130,12 @@ const UserProfile: React.FC = () => {
             />
             <FormField
               control={form.control}
-              name="phoneNumber"
+              name="telephone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Numéro de téléphone</FormLabel>
                   <FormControl>
-                    <Input type="text" {...field}  />
+                    <Input type="tel" {...field}  />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
