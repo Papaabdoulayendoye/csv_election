@@ -143,13 +143,13 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
     if (response?.message) {
       if (response?.type === "success") {
         toast.success(response?.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
       } else {
         toast.error(response?.message);
       }
     }
-    setTimeout(() => {
-      window.location.reload();
-    }, 3500);
   };
 
   const loggout = () => {
@@ -205,9 +205,9 @@ const ElectionPage = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
             <div className="lg:col-span-1">
-  <div className="bg-white rounded-lg shadow-md p-6 h-full max-h-[500px]">
+  <div className="bg-white rounded-lg shadow-md p-6 h-full">
     <h2 className="text-2xl font-semibold text-primary mb-4">Classement des Candidats</h2>
-    <div className="overflow-y-auto max-h-[400px]">
+    <div className="overflow-y-auto ">
       {chartType === "bar" ? (
         <Bar
           data={rankingData}

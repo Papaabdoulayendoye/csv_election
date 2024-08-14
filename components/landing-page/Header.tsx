@@ -20,6 +20,8 @@ const Header = () => {
           <a href="#features" className="hover:text-secondary transition-colors">Fonctionnalités</a>
           <a href="#how-it-works" className="hover:text-secondary transition-colors">Comment ça marche</a>
           <a href="#contact" className="hover:text-secondary transition-colors">Contact</a>
+          <a href="/sign-in" className="hover:text-secondary transition-colors">Se connecter</a>
+          <a href="/sign-up" className="hover:text-secondary transition-colors">S'inscrire</a>
         </div>
         {/* Menu for mobile */}
         <button
@@ -31,6 +33,8 @@ const Header = () => {
       </nav>
       {/* Mobile menu */}
       <div className={`md:hidden ${menuOuvert ? 'block' : 'hidden'} bg-white shadow-md transition duration-300`}>
+        <a href="/sign-in" className="block py-2 px-6 hover:text-secondary transition-colors">Se connecter</a>
+        <a href="/sign-up" className="block py-2 px-6 hover:text-secondary transition-colors">S'inscrire</a>
         <a href="#about" className="block py-2 px-6 hover:text-secondary transition-colors">À propos</a>
         <a href="#features" className="block py-2 px-6 hover:text-secondary transition-colors">Fonctionnalités</a>
         <a href="#how-it-works" className="block py-2 px-6 hover:text-secondary transition-colors">Comment ça marche</a>
